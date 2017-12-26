@@ -29,79 +29,100 @@ public class DataCreationManager : MonoBehaviour
         infoBlockHolderDefaultPos = new Vector2(infoBlockHolder.GetComponent<RectTransform>().offsetMin.y, infoBlockHolder.GetComponent<RectTransform>().offsetMax.y);
     }
 
-    public void CreateNewFolder()
+    public void CreateNewDataFolder(DataFolder dataFolder)
     {
-        GameObject newFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
-        newFolder.transform.SetParent(folderHolder);
-        newFolder.GetComponent<DataFolder>().iD = newFolder.GetInstanceID();
+        GameObject newDataFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
+        newDataFolder.transform.SetParent(folderHolder);
 
-        StructureManager.instance.folderSaves.Add(SaveManager.instance.CreateFolderSave(newFolder.GetComponent<DataFolder>()));
+        if (dataFolder == null)
+        {
+            newDataFolder.GetComponent<DataFolderHolder>().myDataFolder = new DataFolder
+            {
+                iD = newDataFolder.GetInstanceID(),
+                color = newDataFolder.GetComponent<DataFolderHolder>().customizableImage.color
+            };
+
+            TestSaver.saveData.dataFolders.Add(newDataFolder.GetComponent<DataFolderHolder>().myDataFolder);
+        }
+        else
+        {
+            newDataFolder.GetComponent<DataFolderHolder>().myDataFolder = dataFolder;
+        }
+
+        newDataFolder.GetComponent<DataFolderHolder>().Initialize();
     }
 
-    public void CreateFolderFromSave(FolderSave save)
+    //public void CreateFolderFromSave(FolderSave save)
+    //{
+    //    GameObject newFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
+    //    newFolder.transform.SetParent(folderHolder);
+
+    //    DataFolder folderComponent = newFolder.GetComponent<DataFolder>();
+
+    //    folderComponent.iD = save.iD;
+    //    folderComponent.folderName.text = SaveManager.Decrypt(save.name);
+
+    //    folderComponent.myInfoBlockSaves = save.infoBlockSaves;
+
+    //    Color32 folderColor = new Color32(System.Convert.ToByte(save.colorR), System.Convert.ToByte(save.colorG), System.Convert.ToByte(save.colorB), 255);
+
+    //    folderComponent.customizableImage.color = folderColor;
+    //}
+
+    public void CreateNewDataBlock(DataBlock dataBlock)
     {
-        GameObject newFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
-        newFolder.transform.SetParent(folderHolder);
+        GameObject newDataBlock = Instantiate(infoBlock, infoBlockHolder.position, Quaternion.identity);
+        newDataBlock.transform.SetParent(infoBlockHolder);
 
-        DataFolder folderComponent = newFolder.GetComponent<DataFolder>();
+        if (dataBlock == null)
+        {
+            newDataBlock.GetComponent<DataBlockHolder>().myDataBlock = new DataBlock
+            {
+                iD = newDataBlock.GetInstanceID(),
+                color = newDataBlock.GetComponent<DataBlockHolder>().customizableImage.color
+            };
 
-        folderComponent.iD = save.iD;
-        folderComponent.folderName.text = SaveManager.Decrypt(save.name);
+            StructureManager.currentDataFolder.myDataBlocks.Add(newDataBlock.GetComponent<DataBlockHolder>().myDataBlock);
+        }
+        else
+        {
+            newDataBlock.GetComponent<DataBlockHolder>().myDataBlock = dataBlock;
+        }
 
-        folderComponent.myInfoBlockSaves = save.infoBlockSaves;
-
-        Color32 folderColor = new Color32(System.Convert.ToByte(save.colorR), System.Convert.ToByte(save.colorG), System.Convert.ToByte(save.colorB), 255);
-
-        folderComponent.customizableImage.color = folderColor;
+        newDataBlock.GetComponent<DataBlockHolder>().Initialize();
     }
 
-    public void CreateNewInfoBlock()
-    {
-        GameObject newInfoBlock = Instantiate(infoBlock, infoBlockHolder.position, Quaternion.identity);
-        newInfoBlock.transform.SetParent(infoBlockHolder);
-        newInfoBlock.GetComponent<InfoBlock>().iD = newInfoBlock.GetInstanceID();
-
-        StructureManager.currentDataFolder.myInfoBlockSaves.Add(SaveManager.instance.CreateInfoBlockSave(newInfoBlock.GetComponent<InfoBlock>()));
-
-        SaveManager.instance.SaveAllFolders();
-    }
-
-    public void CreateNewInputField(int type, InfoBlock infoBlock)
+    public void CreateNewDataField(int type, DataBlockHolder dataBlockHolder)
     {
         if (type == 0)
         {
-            GameObject newInfoInputField = Instantiate(infoInputField, infoBlock.inputFieldHolder.position, Quaternion.identity);
-            newInfoInputField.transform.SetParent(infoBlock.inputFieldHolder);
+            GameObject newInfoDataField = Instantiate(infoInputField, dataBlockHolder.inputFieldHolder.position, Quaternion.identity);
+            newInfoDataField.transform.SetParent(dataBlockHolder.inputFieldHolder);
 
-            newInfoInputField.GetComponent<DataInputField>().iD = newInfoInputField.GetInstanceID();
-
-            InputFieldSave inputFieldSave = new InputFieldSave()
+            newInfoDataField.GetComponent<DataFieldHolder>().myDataField = new DataField
             {
-                iD = newInfoInputField.GetComponent<DataInputField>().iD,
-                text = newInfoInputField.GetComponent<InputField>().text,
-                type = (int)newInfoInputField.GetComponent<InputFieldType>().type
+                iD = newInfoDataField.GetInstanceID(),
+                type = (int)newInfoDataField.GetComponent<InputFieldType>().type
             };
 
-            infoBlock.myInputFieldSaves.Add(inputFieldSave);
+            dataBlockHolder.myDataBlock.myDataFields.Add(newInfoDataField.GetComponent<DataFieldHolder>().myDataField);
+
         }
         else if (type == 1)
         {
-            GameObject newTitleInputField = Instantiate(titleInputField, infoBlock.inputFieldHolder.position, Quaternion.identity);
-            newTitleInputField.transform.SetParent(infoBlock.inputFieldHolder);
+            GameObject newTitleDataField = Instantiate(titleInputField, dataBlockHolder.inputFieldHolder.position, Quaternion.identity);
+            newTitleDataField.transform.SetParent(dataBlockHolder.inputFieldHolder);
 
-            newTitleInputField.GetComponent<DataInputField>().iD = newTitleInputField.GetInstanceID();
-
-            InputFieldSave inputFieldSave = new InputFieldSave()
+            newTitleDataField.GetComponent<DataFieldHolder>().myDataField = new DataField()
             {
-                iD = newTitleInputField.GetComponent<DataInputField>().iD,
-                text = newTitleInputField.GetComponent<InputField>().text,
-                type = (int)newTitleInputField.GetComponent<InputFieldType>().type
+                iD = newTitleDataField.GetComponent<DataFieldHolder>().myDataField.iD,
+                type = (int)newTitleDataField.GetComponent<InputFieldType>().type
             };
 
-            infoBlock.myInputFieldSaves.Add(inputFieldSave);
+            dataBlockHolder.myDataBlock.myDataFields.Add(newTitleDataField.GetComponent<DataFieldHolder>().myDataField);
         }
 
-        infoBlock.IncreaseSize();
-        StartCoroutine(infoBlock.CloseOptions());
+        dataBlockHolder.IncreaseSize();
+        StartCoroutine(dataBlockHolder.CloseOptions());
     }
 }

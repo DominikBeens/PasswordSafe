@@ -9,8 +9,6 @@ public class StructureManager : MonoBehaviour
     public static StructureManager instance;
     public static DataFolder currentDataFolder;
 
-    public List<FolderSave> folderSaves = new List<FolderSave>();
-
     public GameObject infoBlockPanel;
 
     [Header("Delete Panel")]
@@ -75,31 +73,19 @@ public class StructureManager : MonoBehaviour
         }
     }
 
-    public void CreateNewFolder()
+    public void CreateDataFolder()
     {
-        DataCreationManager.instance.CreateNewFolder();
+        DataCreationManager.instance.CreateNewDataFolder(null);
     }
 
-    public void CreateNewInfoBlock()
+    public void CreateDataBlock()
     {
-        DataCreationManager.instance.CreateNewInfoBlock();
+        DataCreationManager.instance.CreateNewDataBlock(null);
     }
 
     public void HomeButton()
     {
         infoBlockPanel.SetActive(false);
-
-        if (currentDataFolder != null)
-        {
-            List<InfoBlockSave> newInfoBlockSaves = new List<InfoBlockSave>();
-            for (int i = 0; i < currentDataFolder.myInfoBlockSaves.Count; i++)
-            {
-                newInfoBlockSaves.Add(SaveManager.instance.CreateInfoBlockSave(DataCreationManager.instance.infoBlockHolder.GetChild(i).GetComponent<InfoBlock>()));
-            }
-            currentDataFolder.myInfoBlockSaves = newInfoBlockSaves;
-        }
-
-        SaveManager.instance.SaveAllFolders();
         currentDataFolder = null;
         ResetPanelScroll();
     }
@@ -131,13 +117,13 @@ public class StructureManager : MonoBehaviour
         {
             if (toDelete != null)
             {
-                if (toDelete.GetComponent<DataFolder>() != null)
+                if (toDelete.GetComponent<DataFolderHolder>() != null)
                 {
-                    for (int i = 0; i < folderSaves.Count; i++)
+                    for (int i = 0; i < TestSaver.saveData.dataFolders.Count; i++)
                     {
-                        if (folderSaves[i].iD == toDelete.GetComponent<DataFolder>().iD)
+                        if (TestSaver.saveData.dataFolders[i].iD == toDelete.GetComponent<DataFolderHolder>().myDataFolder.iD)
                         {
-                            folderSaves.Remove(folderSaves[i]);
+                            TestSaver.saveData.dataFolders.Remove(TestSaver.saveData.dataFolders[i]);
                             Destroy(toDelete);
                             toDelete = null;
 
@@ -146,13 +132,13 @@ public class StructureManager : MonoBehaviour
                         }
                     }
                 }
-                else if (toDelete.GetComponent<InfoBlock>() != null)
+                else if (toDelete.GetComponent<DataBlockHolder>() != null)
                 {
-                    for (int i = 0; i < currentDataFolder.myInfoBlockSaves.Count; i++)
+                    for (int i = 0; i < currentDataFolder.myDataBlocks.Count; i++)
                     {
-                        if (currentDataFolder.myInfoBlockSaves[i].iD == toDelete.GetComponent<InfoBlock>().iD)
+                        if (currentDataFolder.myDataBlocks[i].iD == toDelete.GetComponent<DataBlockHolder>().myDataBlock.iD)
                         {
-                            currentDataFolder.myInfoBlockSaves.Remove(currentDataFolder.myInfoBlockSaves[i]);
+                            currentDataFolder.myDataBlocks.Remove(currentDataFolder.myDataBlocks[i]);
                             Destroy(toDelete);
                             toDelete = null;
 
@@ -160,25 +146,10 @@ public class StructureManager : MonoBehaviour
                             return;
                         }
                     }
-
-                    // This is for removing the infoblock out of the saves if you wanna do that more quickly, i dont remember if this worked, think it did
-                    //for (int i = 0; i < folderSaves.Count; i++)
-                    //{
-                    //    for (int ii = 0; ii < folderSaves[i].infoBlockSaves.Count; ii++)
-                    //    {
-                    //        if (folderSaves[i].infoBlockSaves[ii].iD == toDelete.GetComponent<InfoBlock>().iD)
-                    //        {
-                    //            folderSaves[i].infoBlockSaves.Remove(folderSaves[i].infoBlockSaves[ii]);
-                    //            Destroy(toDelete);
-                    //            toDelete = null;
-                    //            return;
-                    //        }
-                    //    }
-                    //}
                 }
-                else if (toDelete.GetComponent<DataInputField>() != null)
+                else if (toDelete.GetComponent<DataFieldHolder>() != null)
                 {
-                    toDelete.GetComponent<DataInputField>().DeleteInputField();
+                    toDelete.GetComponent<DataFieldHolder>().DeleteDataField();
                 }
             }
         }
@@ -186,13 +157,13 @@ public class StructureManager : MonoBehaviour
         {
             if (toDelete != null)
             {
-                if (toDelete.GetComponent<DataFolder>() != null)
+                if (toDelete.GetComponent<DataFolderHolder>() != null)
                 {
-                    toDelete.GetComponent<DataFolder>().CloseOptionsButton();
+                    toDelete.GetComponent<DataFolderHolder>().ToggleOptionsButton();
                 }
-                else if (toDelete.GetComponent<InfoBlock>() != null)
+                else if (toDelete.GetComponent<DataBlockHolder>() != null)
                 {
-                    toDelete.GetComponent<InfoBlock>().CloseOptionsButton();
+                    toDelete.GetComponent<DataBlockHolder>().ToggleOptionsButton();
                 }
                 toDelete = null;
             }
@@ -232,6 +203,24 @@ public class StructureManager : MonoBehaviour
         colorPickerPanel.SetActive(true);
     }
 
+    public void ResetColorsButton()
+    {
+        // change colors
+        homeHeaderBackground.color = TestSaver.saveData.defaultHomeHeaderBackgroundColor;
+        homeBackground.color = TestSaver.saveData.defaultHomeBackgroundColor;
+        newFolderBackground.color = TestSaver.saveData.defaultNewDataFolderBackgroundColor;
+        newInfoBlockBackground.color = TestSaver.saveData.defaultNewDataBlockBackgroundColor;
+
+        //inside folder
+        optionsBackground.color = TestSaver.saveData.defaultHomeBackgroundColor;
+
+        //save
+        TestSaver.saveData.homeHeaderBackgroundColor = homeHeaderBackground.color;
+        TestSaver.saveData.homeBackgroundColor = homeBackground.color;
+        TestSaver.saveData.newDataFolderBackgroundColor = newFolderBackground.color;
+        TestSaver.saveData.newDataBlockBackgroundColor = newInfoBlockBackground.color;
+    }
+
     private void ChangeCustomizeButtonColors(Button button, Image imageToChange)
     {
         ColorBlock colorBlock = button.colors;
@@ -247,11 +236,11 @@ public class StructureManager : MonoBehaviour
 
     public void ConfirmNewPassButton()
     {
-        if (oldPassText.text == SaveManager.Decrypt(SaveManager.instance.saveData.password))
+        if (oldPassText.text == TestSaver.saveData.password)
         {
             if (newPassText.text != null)
             {
-                SaveManager.instance.saveData.password = SaveManager.Encrypt(newPassText.text);
+                TestSaver.saveData.password = newPassText.text;
 
                 oldPassText.text = null;
                 newPassText.text = null;
@@ -264,7 +253,7 @@ public class StructureManager : MonoBehaviour
     {
         if (b)
         {
-            folderSaves = new List<FolderSave>();
+            TestSaver.saveData.dataFolders = new List<DataFolder>();
 
             for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
             {

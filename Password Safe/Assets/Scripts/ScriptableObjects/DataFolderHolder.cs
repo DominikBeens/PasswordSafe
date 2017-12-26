@@ -6,12 +6,9 @@ using UnityEngine.UI;
 public class DataFolderHolder : MonoBehaviour
 {
 
-    public DataFolderSO myDataFolder;
+    public DataFolder myDataFolder;
 
-    public int iD;
-    public InputField folderName;
-
-    public List<InfoBlockSave> myInfoBlockSaves = new List<InfoBlockSave>();
+    public InputField nameInputField;
 
     public GameObject optionsPanel;
     public Animator anim;
@@ -21,7 +18,7 @@ public class DataFolderHolder : MonoBehaviour
     public void OpenFolder()
     {
         ResetPanelScroll();
-        StructureManager.currentDataFolder = GetComponent<DataFolder>();
+        StructureManager.currentDataFolder = myDataFolder;
 
         if (DataCreationManager.instance.infoBlockHolder.childCount > 0)
         {
@@ -31,66 +28,75 @@ public class DataFolderHolder : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < myInfoBlockSaves.Count; i++)
+        for (int i = 0; i < myDataFolder.myDataBlocks.Count; i++)
         {
-            GameObject newInfoBlock = Instantiate(DataCreationManager.instance.infoBlock, DataCreationManager.instance.infoBlockHolder.position, Quaternion.identity);
-            newInfoBlock.transform.SetParent(DataCreationManager.instance.infoBlockHolder);
+            GameObject newDataBlock = Instantiate(DataCreationManager.instance.infoBlock, DataCreationManager.instance.infoBlockHolder.position, Quaternion.identity);
+            newDataBlock.transform.SetParent(DataCreationManager.instance.infoBlockHolder);
 
-            InfoBlock infoBlock = newInfoBlock.GetComponent<InfoBlock>();
+            DataBlockHolder dataBlock = newDataBlock.GetComponent<DataBlockHolder>();
 
-            infoBlock.iD = myInfoBlockSaves[i].iD;
-            infoBlock.nameInputField.text = SaveManager.Decrypt(myInfoBlockSaves[i].name);
-            infoBlock.myInputFieldSaves = myInfoBlockSaves[i].inputFieldSaves;
+            dataBlock.myDataBlock = myDataFolder.myDataBlocks[i];
 
-            infoBlock.customizableImage.color = new Color32(System.Convert.ToByte(myInfoBlockSaves[i].colorR),
-                                                            System.Convert.ToByte(myInfoBlockSaves[i].colorG),
-                                                            System.Convert.ToByte(myInfoBlockSaves[i].colorB), 255);
-
-            for (int ii = 0; ii < infoBlock.myInputFieldSaves.Count; ii++)
+            for (int ii = 0; ii < dataBlock.myDataBlock.myDataFields.Count; ii++)
             {
-                if (infoBlock.myInputFieldSaves[ii].type == 0)
+                if (dataBlock.myDataBlock.myDataFields[ii].type == 0)
                 {
-                    GameObject newInfoInputField = Instantiate(DataCreationManager.instance.infoInputField, infoBlock.inputFieldHolder.position, Quaternion.identity);
-                    newInfoInputField.transform.SetParent(infoBlock.inputFieldHolder);
+                    GameObject newInfoDataField = Instantiate(DataCreationManager.instance.infoInputField, dataBlock.inputFieldHolder.position, Quaternion.identity);
+                    newInfoDataField.transform.SetParent(dataBlock.inputFieldHolder);
 
-                    newInfoInputField.GetComponent<InputField>().text = SaveManager.Decrypt(infoBlock.myInputFieldSaves[ii].text);
-                    newInfoInputField.GetComponent<DataInputField>().iD = infoBlock.myInputFieldSaves[ii].iD;
+                    newInfoDataField.GetComponent<DataFieldHolder>().myDataField = dataBlock.myDataBlock.myDataFields[ii];
                 }
-                else if (infoBlock.myInputFieldSaves[ii].type == 1)
+                else if (dataBlock.myDataBlock.myDataFields[ii].type == 1)
                 {
-                    GameObject newTitleInputField = Instantiate(DataCreationManager.instance.titleInputField, infoBlock.inputFieldHolder.position, Quaternion.identity);
-                    newTitleInputField.transform.SetParent(infoBlock.inputFieldHolder);
+                    GameObject newTitleDataField = Instantiate(DataCreationManager.instance.titleInputField, dataBlock.inputFieldHolder.position, Quaternion.identity);
+                    newTitleDataField.transform.SetParent(dataBlock.inputFieldHolder);
 
-                    newTitleInputField.GetComponent<InputField>().text = SaveManager.Decrypt(infoBlock.myInputFieldSaves[ii].text);
-                    newTitleInputField.GetComponent<DataInputField>().iD = infoBlock.myInputFieldSaves[ii].iD;
+                    newTitleDataField.GetComponent<DataFieldHolder>().myDataField = dataBlock.myDataBlock.myDataFields[ii];
                 }
 
-                infoBlock.IncreaseSize();
+                dataBlock.IncreaseSize();
             }
+
+            dataBlock.Initialize();
         }
 
         StructureManager.instance.infoBlockPanel.SetActive(true);
     }
 
+    public void OnValueChanged()
+    {
+        myDataFolder.folderName = nameInputField.text;
+    }
+
+    public void Initialize()
+    {
+        if (myDataFolder != null)
+        {
+            nameInputField.text = myDataFolder.folderName;
+
+            customizableImage.color = myDataFolder.color;
+        }
+    }
+
     public void CustomizeButton()
     {
         ColorPicker.imageToChangeColor = customizableImage;
+        ColorPicker.dataObjectToSaveTo = gameObject;
         StructureManager.instance.colorPickerPanel.SetActive(true);
 
         StartCoroutine(CloseOptions());
     }
 
-    public void OpenOptions()
+    public void ToggleOptionsButton()
     {
         if (!optionsPanel.activeInHierarchy)
         {
             optionsPanel.SetActive(true);
         }
-    }
-
-    public void CloseOptionsButton()
-    {
-        StartCoroutine(CloseOptions());
+        else
+        {
+            StartCoroutine(CloseOptions());
+        }
     }
 
     public IEnumerator CloseOptions()

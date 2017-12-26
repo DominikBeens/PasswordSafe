@@ -33,6 +33,7 @@ public class ColorPicker : MonoBehaviour
     public Text gValueText;
     public Text bValueText;
 
+    public static GameObject dataObjectToSaveTo;
     public static Image imageToChangeColor;
     private Color32 newColor;
 
@@ -88,7 +89,41 @@ public class ColorPicker : MonoBehaviour
     public void ConfirmColor()
     {
         imageToChangeColor.color = newColor;
+
+        if (imageToChangeColor == StructureManager.instance.homeHeaderBackground)
+        {
+            TestSaver.saveData.homeHeaderBackgroundColor = newColor;
+        }
+        else if (imageToChangeColor == StructureManager.instance.homeBackground)
+        {
+            TestSaver.saveData.homeBackgroundColor = newColor;
+
+            //inside folder
+            StructureManager.instance.optionsBackground.color = newColor;
+        }
+        else if (imageToChangeColor == StructureManager.instance.newFolderBackground)
+        {
+            TestSaver.saveData.newDataFolderBackgroundColor = newColor;
+        }
+        else if (imageToChangeColor == StructureManager.instance.newInfoBlockBackground)
+        {
+            TestSaver.saveData.newDataBlockBackgroundColor = newColor;
+        }
+
+        if (dataObjectToSaveTo != null)
+        {
+            if (dataObjectToSaveTo.GetComponent<DataFolderHolder>() != null)
+            {
+                dataObjectToSaveTo.GetComponent<DataFolderHolder>().myDataFolder.color = newColor;
+            }
+            else if (dataObjectToSaveTo.GetComponent<DataBlockHolder>() != null)
+            {
+                dataObjectToSaveTo.GetComponent<DataBlockHolder>().myDataBlock.color = newColor;
+            }
+        }
+
         imageToChangeColor = null;
+        dataObjectToSaveTo = null;
         gameObject.SetActive(false);
     }
 

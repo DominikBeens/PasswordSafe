@@ -8,10 +8,6 @@ public class DataBlockHolder : MonoBehaviour
 
     public DataBlock myDataBlock;
 
-    public int iD;
-
-    public List<InputFieldSave> myInputFieldSaves = new List<InputFieldSave>();
-
     public Text nameText;
     public InputField nameInputField;
 
@@ -37,14 +33,30 @@ public class DataBlockHolder : MonoBehaviour
         }
     }
 
+    public void OnValueChanged()
+    {
+        myDataBlock.dataBlockName = nameInputField.text;
+    }
+
+    public void Initialize()
+    {
+        if (myDataBlock != null)
+        {
+            nameInputField.text = myDataBlock.dataBlockName;
+
+            customizableImage.color = myDataBlock.color;
+        }
+    }
+
     public void CreateNewInputField(int type)
     {
-        //DataCreationManager.instance.CreateNewInputField(type, this);
+        DataCreationManager.instance.CreateNewDataField(type, this);
     }
 
     public void CustomizeButton()
     {
         ColorPicker.imageToChangeColor = customizableImage;
+        ColorPicker.dataObjectToSaveTo = gameObject;
         StructureManager.instance.colorPickerPanel.SetActive(true);
 
         StartCoroutine(CloseOptions());
@@ -60,17 +72,16 @@ public class DataBlockHolder : MonoBehaviour
         rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 75);
     }
 
-    public void OpenOptions()
+    public void ToggleOptionsButton()
     {
         if (!optionsPanel.activeInHierarchy)
         {
             optionsPanel.SetActive(true);
         }
-    }
-
-    public void CloseOptionsButton()
-    {
-        StartCoroutine(CloseOptions());
+        else
+        {
+            StartCoroutine(CloseOptions());
+        }
     }
 
     public IEnumerator CloseOptions()

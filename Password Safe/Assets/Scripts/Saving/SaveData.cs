@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
 public class SaveData
@@ -6,27 +7,19 @@ public class SaveData
 
     public string password;
 
-    public List<FolderSave> folderSaves = new List<FolderSave>();
+    public List<DataFolder> dataFolders = new List<DataFolder>();
 
     #region Colors
-    public int homeHeaderBackgroundColorR;
-    public int homeHeaderBackgroundColorG;
-    public int homeHeaderBackgroundColorB;
+    public Color defaultHomeHeaderBackgroundColor = new Color32(34, 30, 54, 255);
+    public Color homeHeaderBackgroundColor = new Color32(34, 30, 54, 255);
 
-    public int homeBackgroundColorR;
-    public int homeBackgroundColorG;
-    public int homeBackgroundColorB;
+    public Color defaultHomeBackgroundColor = new Color32(53, 53, 68, 255);
+    public Color homeBackgroundColor = new Color32(53, 53, 68, 255);
 
-    public int newFolderBackgroundColorR;
-    public int newFolderBackgroundColorG;
-    public int newFolderBackgroundColorB;
+    public Color defaultNewDataFolderBackgroundColor = new Color32(24, 21, 39, 255);
+    public Color newDataFolderBackgroundColor = new Color32(24, 21, 39, 255);
 
-    public int newInfoBlockBackgroundColorR;
-    public int newInfoBlockBackgroundColorG;
-    public int newInfoBlockBackgroundColorB;
-
-    public int optionsBackgroundColorR;
-    public int optionsBackgroundColorG;
-    public int optionsBackgroundColorB;
+    public Color defaultNewDataBlockBackgroundColor = new Color32(24, 21, 39, 255);
+    public Color newDataBlockBackgroundColor = new Color32(24, 21, 39, 255);
     #endregion
 }

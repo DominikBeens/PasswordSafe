@@ -59,7 +59,6 @@ GameObject:
   - component: {fileID: 222078568854612414}
   - component: {fileID: 114791558513363690}
   - component: {fileID: 114516230592640838}
-  - component: {fileID: 114864263555439522}
   - component: {fileID: 114745050934355576}
   - component: {fileID: 114801375804046968}
   - component: {fileID: 114266392697157000}
@@ -279,7 +278,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114629945856551170}
+        m_MethodName: OnValueChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
@@ -333,8 +343,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15081730f39547440bf45ec4cffd9d6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myDataField: {fileID: 0}
-  iD: 0
+  myDataField:
+    iD: 0
+    text: 
+    type: 0
 --- !u!114 &114738546656132020
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -431,18 +443,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
---- !u!114 &114864263555439522
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1657249599245572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5c0bb4417aed14d8988e9a407ab706, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  iD: 0
 --- !u!114 &114881962182824480
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -482,7 +482,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114864263555439522}
+      - m_Target: {fileID: 114629945856551170}
         m_MethodName: DeleteInputFieldButton
         m_Mode: 1
         m_Arguments:

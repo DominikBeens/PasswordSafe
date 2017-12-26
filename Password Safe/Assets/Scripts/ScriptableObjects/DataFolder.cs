@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class DataBlock
+public class DataFolder
 {
 
     public int iD;
 
-    public string dataBlockName;
+    public string folderName;
 
-    public List<DataField> myDataFields = new List<DataField>();
+    public List<DataBlock> myDataBlocks = new List<DataBlock>();
 
     public Color color;
 }

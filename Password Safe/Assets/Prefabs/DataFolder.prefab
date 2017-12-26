@@ -161,10 +161,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224671323355482708}
-  - component: {fileID: 114944699318178706}
   - component: {fileID: 114301127224461678}
   m_Layer: 5
-  m_Name: Folder
+  m_Name: DataFolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -458,7 +457,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114301127224461678}
+        m_MethodName: OnValueChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
@@ -480,9 +490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myDataFolder: {fileID: 0}
-  iD: 0
-  folderName: {fileID: 114276225664053694}
-  myInfoBlockSaves: []
+  nameInputField: {fileID: 114276225664053694}
   optionsPanel: {fileID: 1891036855987610}
   anim: {fileID: 95921370358118410}
   customizableImage: {fileID: 114110769809023916}
@@ -525,8 +533,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114944699318178706}
-        m_MethodName: OpenOptions
+      - m_Target: {fileID: 114301127224461678}
+        m_MethodName: ToggleOptionsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -577,8 +585,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114944699318178706}
-        m_MethodName: CloseOptionsButton
+      - m_Target: {fileID: 114301127224461678}
+        m_MethodName: ToggleOptionsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -757,7 +765,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114944699318178706}
+      - m_Target: {fileID: 114301127224461678}
         m_MethodName: CustomizeButton
         m_Mode: 1
         m_Arguments:
@@ -976,7 +984,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114944699318178706}
+      - m_Target: {fileID: 114301127224461678}
         m_MethodName: DeleteFolder
         m_Mode: 1
         m_Arguments:
@@ -1032,7 +1040,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 114944699318178706}
+        - m_Target: {fileID: 114301127224461678}
           m_MethodName: OpenFolder
           m_Mode: 1
           m_Arguments:
@@ -1226,23 +1234,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
---- !u!114 &114944699318178706
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1312178884243838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69605cd9623fbce49955415cddab934f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  iD: 0
-  folderName: {fileID: 114276225664053694}
-  myInfoBlockSaves: []
-  optionsPanel: {fileID: 1891036855987610}
-  anim: {fileID: 95921370358118410}
-  customizableImage: {fileID: 114110769809023916}
 --- !u!114 &114957355887187322
 MonoBehaviour:
   m_ObjectHideFlags: 1

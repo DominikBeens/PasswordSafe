@@ -1,13 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DataFieldHolder : MonoBehaviour
 {
 
     public DataField myDataField;
 
-    public int iD;
+    private InputField inputField;
+
+    public void OnValueChanged()
+    {
+        myDataField.text = inputField.text;
+    }
+
+    private void OnEnable()
+    {
+        inputField = GetComponent<InputField>();
+
+        if (myDataField != null)
+        {
+            inputField.text = myDataField.text;
+        }
+    }
 
     public void DeleteInputFieldButton()
     {
@@ -15,15 +31,15 @@ public class DataFieldHolder : MonoBehaviour
         StructureManager.instance.OpenDeletePanel(2);
     }
 
-    public void DeleteInputField()
+    public void DeleteDataField()
     {
-        InfoBlock topParent = transform.parent.GetComponentInParent<InfoBlock>();
+        DataBlockHolder topParent = transform.parent.GetComponentInParent<DataBlockHolder>();
 
-        for (int i = 0; i < topParent.myInputFieldSaves.Count; i++)
+        for (int i = 0; i < topParent.myDataBlock.myDataFields.Count; i++)
         {
-            if (iD == topParent.myInputFieldSaves[i].iD)
+            if (myDataField.iD == topParent.myDataBlock.myDataFields[i].iD)
             {
-                topParent.myInputFieldSaves.Remove(topParent.myInputFieldSaves[i]);
+                topParent.myDataBlock.myDataFields.Remove(topParent.myDataBlock.myDataFields[i]);
                 topParent.DecreaseSize();
                 Destroy(gameObject);
             }

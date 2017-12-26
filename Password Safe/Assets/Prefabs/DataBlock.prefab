@@ -353,12 +353,11 @@ GameObject:
   - component: {fileID: 224679411110288924}
   - component: {fileID: 222046316178985806}
   - component: {fileID: 114155457048945328}
-  - component: {fileID: 114573454135741558}
   - component: {fileID: 114597681863532422}
   - component: {fileID: 114532232682034828}
   - component: {fileID: 114846656090819582}
   m_Layer: 5
-  m_Name: InfoBlock
+  m_Name: DataBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -521,7 +520,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114573454135741558}
+      - m_Target: {fileID: 114846656090819582}
         m_MethodName: CreateNewInputField
         m_Mode: 3
         m_Arguments:
@@ -573,7 +572,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114573454135741558}
+      - m_Target: {fileID: 114846656090819582}
         m_MethodName: CreateNewInputField
         m_Mode: 3
         m_Arguments:
@@ -812,7 +811,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114573454135741558}
+      - m_Target: {fileID: 114846656090819582}
         m_MethodName: CustomizeButton
         m_Mode: 1
         m_Arguments:
@@ -1004,8 +1003,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114573454135741558}
-        m_MethodName: OpenOptions
+      - m_Target: {fileID: 114846656090819582}
+        m_MethodName: ToggleOptionsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1103,7 +1102,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114573454135741558}
+      - m_Target: {fileID: 114846656090819582}
         m_MethodName: DeleteInfoBlock
         m_Mode: 1
         m_Arguments:
@@ -1116,25 +1115,6 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &114573454135741558
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1943526638739104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9ba2103e71cc3843be1fc7d34eb8157, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  iD: 0
-  myInputFieldSaves: []
-  nameText: {fileID: 114979898036479394}
-  nameInputField: {fileID: 114936657346593028}
-  inputFieldHolder: {fileID: 224373925470508898}
-  optionsPanel: {fileID: 1528969184501484}
-  anim: {fileID: 95593684191128770}
-  customizableImage: {fileID: 114460853374179718}
 --- !u!114 &114580141739625216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1312,8 +1292,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114573454135741558}
-        m_MethodName: CloseOptionsButton
+      - m_Target: {fileID: 114846656090819582}
+        m_MethodName: ToggleOptionsButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1382,8 +1362,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myDataBlock: {fileID: 0}
-  iD: 0
-  myInputFieldSaves: []
   nameText: {fileID: 114979898036479394}
   nameInputField: {fileID: 114936657346593028}
   inputFieldHolder: {fileID: 224373925470508898}
@@ -1537,7 +1515,18 @@ MonoBehaviour:
       Culture=neutral, PublicKeyToken=null
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114846656090819582}
+        m_MethodName: OnValueChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.InputField+OnChangeEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
