@@ -33,6 +33,7 @@ public class DataCreationManager : MonoBehaviour
     {
         GameObject newDataFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
         newDataFolder.transform.SetParent(folderHolder);
+        newDataFolder.transform.localScale = Vector3.one;
 
         if (dataFolder == null)
         {
@@ -52,27 +53,11 @@ public class DataCreationManager : MonoBehaviour
         newDataFolder.GetComponent<DataFolderHolder>().Initialize();
     }
 
-    //public void CreateFolderFromSave(FolderSave save)
-    //{
-    //    GameObject newFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
-    //    newFolder.transform.SetParent(folderHolder);
-
-    //    DataFolder folderComponent = newFolder.GetComponent<DataFolder>();
-
-    //    folderComponent.iD = save.iD;
-    //    folderComponent.folderName.text = SaveManager.Decrypt(save.name);
-
-    //    folderComponent.myInfoBlockSaves = save.infoBlockSaves;
-
-    //    Color32 folderColor = new Color32(System.Convert.ToByte(save.colorR), System.Convert.ToByte(save.colorG), System.Convert.ToByte(save.colorB), 255);
-
-    //    folderComponent.customizableImage.color = folderColor;
-    //}
-
     public void CreateNewDataBlock(DataBlock dataBlock)
     {
         GameObject newDataBlock = Instantiate(infoBlock, infoBlockHolder.position, Quaternion.identity);
         newDataBlock.transform.SetParent(infoBlockHolder);
+        newDataBlock.transform.localScale = Vector3.one;
 
         if (dataBlock == null)
         {
@@ -98,6 +83,7 @@ public class DataCreationManager : MonoBehaviour
         {
             GameObject newInfoDataField = Instantiate(infoInputField, dataBlockHolder.inputFieldHolder.position, Quaternion.identity);
             newInfoDataField.transform.SetParent(dataBlockHolder.inputFieldHolder);
+            newInfoDataField.transform.localScale = Vector3.one;
 
             newInfoDataField.GetComponent<DataFieldHolder>().myDataField = new DataField
             {
@@ -112,6 +98,7 @@ public class DataCreationManager : MonoBehaviour
         {
             GameObject newTitleDataField = Instantiate(titleInputField, dataBlockHolder.inputFieldHolder.position, Quaternion.identity);
             newTitleDataField.transform.SetParent(dataBlockHolder.inputFieldHolder);
+            newTitleDataField.transform.localScale = Vector3.one;
 
             newTitleDataField.GetComponent<DataFieldHolder>().myDataField = new DataField()
             {

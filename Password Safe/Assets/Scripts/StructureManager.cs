@@ -49,6 +49,9 @@ public class StructureManager : MonoBehaviour
     public Button customizeOptionsBackgroundButton;
     public Image optionsBackground;
 
+    [Header("Data Saving Panel")]
+    public GameObject dataSavePanel;
+
     private void Awake()
     {
         if (instance == null)
@@ -193,6 +196,12 @@ public class StructureManager : MonoBehaviour
     public void ToggleClearDataPanelButton()
     {
         clearDataPanel.SetActive(!clearDataPanel.activeInHierarchy);
+        dataSavePanel.SetActive(false);
+    }
+
+    public void ToggleDataSavePanelButton()
+    {
+        dataSavePanel.SetActive(!dataSavePanel.activeInHierarchy);
         optionsPanel.SetActive(false);
     }
 

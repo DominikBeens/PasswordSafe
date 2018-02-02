@@ -32,6 +32,7 @@ public class DataFolderHolder : MonoBehaviour
         {
             GameObject newDataBlock = Instantiate(DataCreationManager.instance.infoBlock, DataCreationManager.instance.infoBlockHolder.position, Quaternion.identity);
             newDataBlock.transform.SetParent(DataCreationManager.instance.infoBlockHolder);
+            newDataBlock.transform.localScale = Vector3.one;
 
             DataBlockHolder dataBlock = newDataBlock.GetComponent<DataBlockHolder>();
 
@@ -43,6 +44,7 @@ public class DataFolderHolder : MonoBehaviour
                 {
                     GameObject newInfoDataField = Instantiate(DataCreationManager.instance.infoInputField, dataBlock.inputFieldHolder.position, Quaternion.identity);
                     newInfoDataField.transform.SetParent(dataBlock.inputFieldHolder);
+                    newInfoDataField.transform.localScale = Vector3.one;
 
                     newInfoDataField.GetComponent<DataFieldHolder>().myDataField = dataBlock.myDataBlock.myDataFields[ii];
                 }
@@ -50,6 +52,7 @@ public class DataFolderHolder : MonoBehaviour
                 {
                     GameObject newTitleDataField = Instantiate(DataCreationManager.instance.titleInputField, dataBlock.inputFieldHolder.position, Quaternion.identity);
                     newTitleDataField.transform.SetParent(dataBlock.inputFieldHolder);
+                    newTitleDataField.transform.localScale = Vector3.one;
 
                     newTitleDataField.GetComponent<DataFieldHolder>().myDataField = dataBlock.myDataBlock.myDataFields[ii];
                 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 using UnityEngine;
+using UnityGoogleDrive;
 
 public class TestSaver : MonoBehaviour
 {
@@ -41,6 +42,14 @@ public class TestSaver : MonoBehaviour
         }
     }
 
+    private IEnumerator Get()
+    {
+        var request = GoogleDriveFiles.Get(saveData.googleDriveSaveFileId);
+        yield return request.Send();
+
+        print(request.ResponseData.Name);
+    }
+
     public void Save(SaveData toSave)
     {
         var serializer = new XmlSerializer(typeof(SaveData));
@@ -49,6 +58,83 @@ public class TestSaver : MonoBehaviour
             //DataToSave();
             serializer.Serialize(stream, toSave);
         }
+    }
+
+    public void SaveToGoogleDriveButton(GameObject loadObject)
+    {
+        Save(saveData);
+
+        if (saveData.googleDriveSaveFileId == null || saveData.googleDriveSaveFileId == "")
+        {
+            var file = new UnityGoogleDrive.Data.File() { Name = "PS_SaveData", Content = File.ReadAllBytes(Application.persistentDataPath + "/SaveData.xml") };
+            var request = GoogleDriveFiles.Create(file);
+            request.Send();
+            StartCoroutine(ShowRequestProgress(request, loadObject));
+
+            saveData.googleDriveSaveFileId = request.ResponseData.Id;
+        }
+        else
+        {
+            var file = new UnityGoogleDrive.Data.File() { Name = "PS_SaveData", Content = File.ReadAllBytes(Application.persistentDataPath + "/SaveData.xml") };
+            var request = GoogleDriveFiles.Update(saveData.googleDriveSaveFileId, file);
+            request.Send();
+            StartCoroutine(ShowRequestProgress(request, loadObject));
+        }
+    }
+
+    public void RestoreFromGoogleDriveButton(GameObject loadObject)
+    {
+        if (saveData.googleDriveSaveFileId == null || saveData.googleDriveSaveFileId == "")
+        {
+            return;
+        }
+
+        var request = GoogleDriveFiles.Download(saveData.googleDriveSaveFileId);
+        request.Send().OnDone += RestoreFromGoogleDriveSaveFile;
+
+        StartCoroutine(ShowRequestProgress(request, loadObject));
+    }
+
+    private void RestoreFromGoogleDriveSaveFile(UnityGoogleDrive.Data.File file)
+    {
+        //File.Replace(file.Name, "SaveData.xml", "SaveData.xml.bac");
+        //print("done");
+    }
+
+    private IEnumerator ShowRequestProgress(GoogleDriveFiles.UpdateRequest request, GameObject loadObject)
+    {
+        loadObject.SetActive(true);
+
+        while (request.IsRunning)
+        {
+            yield return null;
+        }
+
+        loadObject.SetActive(false);
+    }
+
+    private IEnumerator ShowRequestProgress(GoogleDriveFiles.CreateRequest request, GameObject loadObject)
+    {
+        loadObject.SetActive(true);
+
+        while (request.IsRunning)
+        {
+            yield return null;
+        }
+
+        loadObject.SetActive(false);
+    }
+
+    private IEnumerator ShowRequestProgress(GoogleDriveFiles.GetRequest request, GameObject loadObject)
+    {
+        loadObject.SetActive(true);
+
+        while (request.IsRunning)
+        {
+            yield return null;
+        }
+
+        loadObject.SetActive(false);
     }
 
     public SaveData Load()

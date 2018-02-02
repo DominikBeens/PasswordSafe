@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class ColorPicker : MonoBehaviour
 {
 
-    private Animator anim;
-
     public Image colorPreview;
 
     private int rValue;
@@ -41,11 +39,6 @@ public class ColorPicker : MonoBehaviour
     private float timer;
     private bool mouseDownIncrease;
     private bool mouseDownDecrease;
-
-    private void Awake()
-    {
-        anim = GetComponent<Animator>();
-    }
 
     private void Update()
     {

@@ -6,6 +6,7 @@ public class SaveData
 {
 
     public string password;
+    public string googleDriveSaveFileId;
 
     public List<DataFolder> dataFolders = new List<DataFolder>();
 
