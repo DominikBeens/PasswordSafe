@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using UnityEngine;
 using UnityGoogleDrive;
@@ -42,14 +43,6 @@ public class TestSaver : MonoBehaviour
         }
     }
 
-    private IEnumerator Get()
-    {
-        var request = GoogleDriveFiles.Get(saveData.googleDriveSaveFileId);
-        yield return request.Send();
-
-        print(request.ResponseData.Name);
-    }
-
     public void Save(SaveData toSave)
     {
         var serializer = new XmlSerializer(typeof(SaveData));
@@ -62,77 +55,109 @@ public class TestSaver : MonoBehaviour
 
     public void SaveToGoogleDriveButton(GameObject loadObject)
     {
+        loadObject.SetActive(true);
+
         Save(saveData);
 
         if (saveData.googleDriveSaveFileId == null || saveData.googleDriveSaveFileId == "")
         {
-            var file = new UnityGoogleDrive.Data.File() { Name = "PS_SaveData", Content = File.ReadAllBytes(Application.persistentDataPath + "/SaveData.xml") };
-            var request = GoogleDriveFiles.Create(file);
-            request.Send();
-            StartCoroutine(ShowRequestProgress(request, loadObject));
-
-            saveData.googleDriveSaveFileId = request.ResponseData.Id;
+            StartCoroutine(SaveToGoogleDrive(loadObject));
         }
         else
         {
             var file = new UnityGoogleDrive.Data.File() { Name = "PS_SaveData", Content = File.ReadAllBytes(Application.persistentDataPath + "/SaveData.xml") };
             var request = GoogleDriveFiles.Update(saveData.googleDriveSaveFileId, file);
             request.Send();
-            StartCoroutine(ShowRequestProgress(request, loadObject));
+
+            loadObject.SetActive(false);
         }
+    }
+
+    private IEnumerator SaveToGoogleDrive(GameObject loadObject)
+    {
+        var file = new UnityGoogleDrive.Data.File() { Name = "PS_SaveData", Content = File.ReadAllBytes(Application.persistentDataPath + "/SaveData.xml") };
+        var request = GoogleDriveFiles.Create(file);
+
+        yield return request.Send();
+
+        saveData.googleDriveSaveFileId = request.ResponseData.Id;
+
+        loadObject.SetActive(false);
     }
 
     public void RestoreFromGoogleDriveButton(GameObject loadObject)
     {
+        loadObject.SetActive(true);
+
         if (saveData.googleDriveSaveFileId == null || saveData.googleDriveSaveFileId == "")
         {
+            StartCoroutine(RestoreFromGoogleDriveSaveFileWithName(loadObject));
             return;
         }
 
+        StartCoroutine(RestoreFromGoogleDriveSaveFileWithID(loadObject));
+    }
+
+    private IEnumerator RestoreFromGoogleDriveSaveFileWithName(GameObject loadObject)
+    {
+        var request = GoogleDriveFiles.List();
+        yield return request.Send();
+
+        string saveFileId = "";
+
+        for (int i = 0; i < request.ResponseData.Files.Count; i++)
+        {
+            if (request.ResponseData.Files[i].Name == "PS_SaveData")
+            {
+                saveFileId = request.ResponseData.Files[i].Id;
+                break;
+            }
+        }
+
+        if (saveFileId == "")
+        {
+            loadObject.SetActive(false);
+            StopCoroutine(RestoreFromGoogleDriveSaveFileWithName(loadObject));
+        }
+
+        var request2 = GoogleDriveFiles.Download(saveFileId);
+        yield return request2.Send();
+
+        string destination = Application.persistentDataPath + "/SaveData.xml";
+
+        File.Delete(destination);
+        File.WriteAllBytes(destination, request2.ResponseData.Content);
+
+        saveData = Load();
+
+        for (int i = 0; i < dataCreationManager.folderHolder.childCount; i++)
+        {
+            Destroy(dataCreationManager.folderHolder.GetChild(i).gameObject);
+        }
+
+        SetLoadedSaveData();
+
+        loadObject.SetActive(false);
+    }
+
+    private IEnumerator RestoreFromGoogleDriveSaveFileWithID(GameObject loadObject)
+    {
         var request = GoogleDriveFiles.Download(saveData.googleDriveSaveFileId);
-        request.Send().OnDone += RestoreFromGoogleDriveSaveFile;
+        yield return request.Send();
 
-        StartCoroutine(ShowRequestProgress(request, loadObject));
-    }
+        string destination = Application.persistentDataPath + "/SaveData.xml";
 
-    private void RestoreFromGoogleDriveSaveFile(UnityGoogleDrive.Data.File file)
-    {
-        //File.Replace(file.Name, "SaveData.xml", "SaveData.xml.bac");
-        //print("done");
-    }
+        File.Delete(destination);
+        File.WriteAllBytes(destination, request.ResponseData.Content);
 
-    private IEnumerator ShowRequestProgress(GoogleDriveFiles.UpdateRequest request, GameObject loadObject)
-    {
-        loadObject.SetActive(true);
+        saveData = Load();
 
-        while (request.IsRunning)
+        for (int i = 0; i < dataCreationManager.folderHolder.childCount; i++)
         {
-            yield return null;
+            Destroy(dataCreationManager.folderHolder.GetChild(i).gameObject);
         }
 
-        loadObject.SetActive(false);
-    }
-
-    private IEnumerator ShowRequestProgress(GoogleDriveFiles.CreateRequest request, GameObject loadObject)
-    {
-        loadObject.SetActive(true);
-
-        while (request.IsRunning)
-        {
-            yield return null;
-        }
-
-        loadObject.SetActive(false);
-    }
-
-    private IEnumerator ShowRequestProgress(GoogleDriveFiles.GetRequest request, GameObject loadObject)
-    {
-        loadObject.SetActive(true);
-
-        while (request.IsRunning)
-        {
-            yield return null;
-        }
+        SetLoadedSaveData();
 
         loadObject.SetActive(false);
     }
