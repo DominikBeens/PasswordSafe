@@ -122,11 +122,11 @@ public class StructureManager : MonoBehaviour
             {
                 if (toDelete.GetComponent<DataFolderHolder>() != null)
                 {
-                    for (int i = 0; i < TestSaver.saveData.dataFolders.Count; i++)
+                    for (int i = 0; i < SaveManager.saveData.dataFolders.Count; i++)
                     {
-                        if (TestSaver.saveData.dataFolders[i].iD == toDelete.GetComponent<DataFolderHolder>().myDataFolder.iD)
+                        if (SaveManager.saveData.dataFolders[i].iD == toDelete.GetComponent<DataFolderHolder>().myDataFolder.iD)
                         {
-                            TestSaver.saveData.dataFolders.Remove(TestSaver.saveData.dataFolders[i]);
+                            SaveManager.saveData.dataFolders.Remove(SaveManager.saveData.dataFolders[i]);
                             Destroy(toDelete);
                             toDelete = null;
 
@@ -215,19 +215,19 @@ public class StructureManager : MonoBehaviour
     public void ResetColorsButton()
     {
         // change colors
-        homeHeaderBackground.color = TestSaver.saveData.defaultHomeHeaderBackgroundColor;
-        homeBackground.color = TestSaver.saveData.defaultHomeBackgroundColor;
-        newFolderBackground.color = TestSaver.saveData.defaultNewDataFolderBackgroundColor;
-        newInfoBlockBackground.color = TestSaver.saveData.defaultNewDataBlockBackgroundColor;
+        homeHeaderBackground.color = SaveManager.saveData.defaultHomeHeaderBackgroundColor;
+        homeBackground.color = SaveManager.saveData.defaultHomeBackgroundColor;
+        newFolderBackground.color = SaveManager.saveData.defaultNewDataFolderBackgroundColor;
+        newInfoBlockBackground.color = SaveManager.saveData.defaultNewDataBlockBackgroundColor;
 
         //inside folder
-        optionsBackground.color = TestSaver.saveData.defaultHomeBackgroundColor;
+        optionsBackground.color = SaveManager.saveData.defaultHomeBackgroundColor;
 
         //save
-        TestSaver.saveData.homeHeaderBackgroundColor = homeHeaderBackground.color;
-        TestSaver.saveData.homeBackgroundColor = homeBackground.color;
-        TestSaver.saveData.newDataFolderBackgroundColor = newFolderBackground.color;
-        TestSaver.saveData.newDataBlockBackgroundColor = newInfoBlockBackground.color;
+        SaveManager.saveData.homeHeaderBackgroundColor = homeHeaderBackground.color;
+        SaveManager.saveData.homeBackgroundColor = homeBackground.color;
+        SaveManager.saveData.newDataFolderBackgroundColor = newFolderBackground.color;
+        SaveManager.saveData.newDataBlockBackgroundColor = newInfoBlockBackground.color;
     }
 
     private void ChangeCustomizeButtonColors(Button button, Image imageToChange)
@@ -245,11 +245,11 @@ public class StructureManager : MonoBehaviour
 
     public void ConfirmNewPassButton()
     {
-        if (oldPassText.text == TestSaver.saveData.password)
+        if (oldPassText.text == SaveManager.saveData.password)
         {
             if (newPassText.text != null)
             {
-                TestSaver.saveData.password = newPassText.text;
+                SaveManager.saveData.password = newPassText.text;
 
                 oldPassText.text = null;
                 newPassText.text = null;
@@ -262,7 +262,7 @@ public class StructureManager : MonoBehaviour
     {
         if (b)
         {
-            TestSaver.saveData.dataFolders = new List<DataFolder>();
+            SaveManager.saveData.dataFolders = new List<DataFolder>();
 
             for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
             {

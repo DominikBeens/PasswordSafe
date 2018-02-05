@@ -43,7 +43,7 @@ public class DataCreationManager : MonoBehaviour
                 color = newDataFolder.GetComponent<DataFolderHolder>().customizableImage.color
             };
 
-            TestSaver.saveData.dataFolders.Add(newDataFolder.GetComponent<DataFolderHolder>().myDataFolder);
+            SaveManager.saveData.dataFolders.Add(newDataFolder.GetComponent<DataFolderHolder>().myDataFolder);
         }
         else
         {

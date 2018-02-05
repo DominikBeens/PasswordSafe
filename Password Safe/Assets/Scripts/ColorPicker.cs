@@ -85,22 +85,22 @@ public class ColorPicker : MonoBehaviour
 
         if (imageToChangeColor == StructureManager.instance.homeHeaderBackground)
         {
-            TestSaver.saveData.homeHeaderBackgroundColor = newColor;
+            SaveManager.saveData.homeHeaderBackgroundColor = newColor;
         }
         else if (imageToChangeColor == StructureManager.instance.homeBackground)
         {
-            TestSaver.saveData.homeBackgroundColor = newColor;
+            SaveManager.saveData.homeBackgroundColor = newColor;
 
             //inside folder
             StructureManager.instance.optionsBackground.color = newColor;
         }
         else if (imageToChangeColor == StructureManager.instance.newFolderBackground)
         {
-            TestSaver.saveData.newDataFolderBackgroundColor = newColor;
+            SaveManager.saveData.newDataFolderBackgroundColor = newColor;
         }
         else if (imageToChangeColor == StructureManager.instance.newInfoBlockBackground)
         {
-            TestSaver.saveData.newDataBlockBackgroundColor = newColor;
+            SaveManager.saveData.newDataBlockBackgroundColor = newColor;
         }
 
         if (dataObjectToSaveTo != null)

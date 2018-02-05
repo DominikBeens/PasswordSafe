@@ -22,10 +22,10 @@ public class LoginManager : MonoBehaviour
 
     public void ConfirmPasswordButton()
     {
-        if (enterPasswordText.text == TestSaver.saveData.password)
+        if (enterPasswordText.text == SaveManager.saveData.password)
         {
             //SaveManager.instance.SetLoadedSaveData();
-            TestSaver.instance.SetLoadedSaveData();
+            SaveManager.instance.SetLoadedSaveData();
 
             loginPanel.SetActive(false);
         }
@@ -36,7 +36,7 @@ public class LoginManager : MonoBehaviour
         if (createPasswordText2.text != null && createPasswordText2.text == createPasswordText1.text)
         {
             //SaveManager.instance.saveData.password = createPasswordText2.text;
-            TestSaver.saveData.password = createPasswordText2.text;
+            SaveManager.saveData.password = createPasswordText2.text;
 
             createPasswordPanel.SetActive(false);
             enterPasswordPanel.SetActive(true);
