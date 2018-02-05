@@ -87,6 +87,7 @@ public class SaveManager : MonoBehaviour
         }
 
         loadObject.SetActive(false);
+        StructureManager.instance.NewNotification("Save Completed");
     }
 
     public void RestoreFromGoogleDriveButton(GameObject loadObject)
@@ -142,6 +143,7 @@ public class SaveManager : MonoBehaviour
         SetLoadedSaveData();
 
         loadObject.SetActive(false);
+        StructureManager.instance.NewNotification("Restore Completed");
     }
 
     private IEnumerator RestoreFromGoogleDriveSaveFileWithID(GameObject loadObject)
@@ -164,6 +166,8 @@ public class SaveManager : MonoBehaviour
         SetLoadedSaveData();
 
         loadObject.SetActive(false);
+        StructureManager.instance.dataSavePanel.SetActive(false);
+        StructureManager.instance.NewNotification("Restore Completed");
     }
 
     public SaveData Load()

@@ -24,22 +24,47 @@ public class LoginManager : MonoBehaviour
     {
         if (enterPasswordText.text == SaveManager.saveData.password)
         {
-            //SaveManager.instance.SetLoadedSaveData();
             SaveManager.instance.SetLoadedSaveData();
 
             loginPanel.SetActive(false);
+            StructureManager.instance.NewNotification("Welcome");
+        }
+        else
+        {
+            StructureManager.instance.NewNotification("Wrong Password");
         }
     }
 
     public void ConfirmPasswordCreationButton()
     {
-        if (createPasswordText2.text != null && createPasswordText2.text == createPasswordText1.text)
+        if (!string.IsNullOrEmpty(createPasswordText2.text) && string.Equals(createPasswordText2.text, createPasswordText1.text))
         {
-            //SaveManager.instance.saveData.password = createPasswordText2.text;
             SaveManager.saveData.password = createPasswordText2.text;
 
             createPasswordPanel.SetActive(false);
             enterPasswordPanel.SetActive(true);
+
+            StructureManager.instance.NewNotification("Password Created");
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(createPasswordText1.text))
+            {
+                StructureManager.instance.NewNotification("Enter A Password");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(createPasswordText2.text))
+            {
+                StructureManager.instance.NewNotification("Confirm Your Password");
+                return;
+            }
+
+            if (!string.Equals(createPasswordText2.text, createPasswordText1.text))
+            {
+                StructureManager.instance.NewNotification("Passwords Do Not Match");
+                return;
+            }
         }
     }
 }

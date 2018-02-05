@@ -52,6 +52,12 @@ public class StructureManager : MonoBehaviour
     [Header("Data Saving Panel")]
     public GameObject dataSavePanel;
 
+    [Header("Notification Panel")]
+    public GameObject notificationPanel;
+    public Text notificationMessage;
+    [HideInInspector]
+    public bool notificationIsActive;
+
     private void Awake()
     {
         if (instance == null)
@@ -247,13 +253,39 @@ public class StructureManager : MonoBehaviour
     {
         if (oldPassText.text == SaveManager.saveData.password)
         {
-            if (newPassText.text != null)
+            if (!string.IsNullOrEmpty(newPassText.text))
             {
                 SaveManager.saveData.password = newPassText.text;
 
                 oldPassText.text = null;
                 newPassText.text = null;
                 ToggleChangePassPanelButton();
+
+                NewNotification("Password Changed");
+            }
+            else
+            {
+                NewNotification("Enter A New Password");
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(oldPassText.text))
+            {
+                NewNotification("Enter Your Old Password");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(newPassText.text))
+            {
+                NewNotification("Enter A New Password");
+                return;
+            }
+
+            if (oldPassText.text != SaveManager.saveData.password)
+            {
+                NewNotification("Wrong Password");
+                return;
             }
         }
     }
@@ -270,8 +302,19 @@ public class StructureManager : MonoBehaviour
             }
 
             infoBlockPanel.SetActive(false);
+
+            NewNotification("Cleared Local Data");
         }
 
         clearDataPanel.SetActive(false);
+    }
+
+    public void NewNotification(string message)
+    {
+        if (!notificationIsActive)
+        {
+            notificationMessage.text = message;
+            notificationPanel.SetActive(true);
+        }
     }
 }
