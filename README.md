@@ -8,7 +8,7 @@ The colors of the user interface are customizable.
 
 ## Features:
 -Organizing data in a clean folder structure with customizable data blocks.   
--Customizable UI colors.
+-Customizable UI colors.   
 -Saving your data locally.   
 -Saving your data to Google Drive.   
 -Restoring your Google Drive to your phone.   
