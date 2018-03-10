@@ -12,3 +12,6 @@ The colors of the user interface are customizable.
 -Saving your data locally.   
 -Saving your data to Google Drive.   
 -Restoring your Google Drive to your phone.   
+
+## Known Issues:   
+-Saving to Google Drive for the very first time may sometimes require the user to restart the app.   
