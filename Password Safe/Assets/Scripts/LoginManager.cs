@@ -6,6 +6,7 @@ public class LoginManager : MonoBehaviour
 
     public static LoginManager instance;
     private Firebase.Auth.FirebaseAuth auth;
+    public static Firebase.Auth.FirebaseUser user;
 
     [SerializeField] private GameObject loginPanel;
     [SerializeField] private Text headerText;
@@ -179,6 +180,8 @@ public class LoginManager : MonoBehaviour
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
 
+            user = auth.CurrentUser;
+
             createAccountPanel.SetActive(false);
             loginAccountPanel.SetActive(true);
 
@@ -209,7 +212,9 @@ public class LoginManager : MonoBehaviour
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
 
-            SaveManager.instance.SetLoadedSaveData();
+            user = auth.CurrentUser;
+
+            SaveManager.instance.LoadFromCloud();
             SaveManager.appSettings.lastLoggedInEmail = email;
             SaveManager.instance.SaveAppSettings(SaveManager.appSettings);
 

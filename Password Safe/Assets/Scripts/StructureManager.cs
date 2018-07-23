@@ -63,6 +63,8 @@ public class StructureManager : MonoBehaviour
         {
             Destroy(this);
         }
+
+        notificationPanel.SetActive(false);
     }
 
     private void Update()
@@ -291,24 +293,24 @@ public class StructureManager : MonoBehaviour
         DataCreationManager.instance.folderHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, DataCreationManager.instance.folderHolderDefaultPos.y);
     }
 
-    public void CloseClearDataPanelButton(bool b)
-    {
-        if (b)
-        {
-            SaveManager.saveData.dataFolders = new List<DataFolder>();
+    //public void CloseClearDataPanelButton(bool b)
+    //{
+    //    if (b)
+    //    {
+    //        SaveManager.saveData.dataFolders = new List<DataFolder>();
 
-            for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
-            {
-                Destroy(DataCreationManager.instance.folderHolder.GetChild(i).gameObject);
-            }
+    //        for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
+    //        {
+    //            Destroy(DataCreationManager.instance.folderHolder.GetChild(i).gameObject);
+    //        }
 
-            infoBlockPanel.SetActive(false);
+    //        infoBlockPanel.SetActive(false);
 
-            NewNotification("Cleared Local Data");
-        }
+    //        NewNotification("Cleared Local Data");
+    //    }
 
-        clearDataPanel.SetActive(false);
-    }
+    //    clearDataPanel.SetActive(false);
+    //}
 
     public void NewNotification(string message)
     {

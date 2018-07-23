@@ -1,5 +1,4 @@
 ﻿using Firebase.Storage;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -15,8 +14,7 @@ public class SaveManager : MonoBehaviour
     public static SaveData saveData;
     public static AppSettings appSettings;
 
-    public DataCreationManager dataCreationManager;
-    public LoginManager loginManager;
+    [SerializeField] private GameObject loadingDataOverlay;
 
     [System.Serializable]
     public struct SerializableColor
@@ -36,21 +34,23 @@ public class SaveManager : MonoBehaviour
             instance = this;
         }
 
-        CheckSavedData();
+        InitFirebaseSDK();
+
+        CheckAppSettings();
         LoginManager.instance.OpenLoginPanel(appSettings);
     }
 
-    private void CheckSavedData()
+    private void CheckAppSettings()
     {
-        if (File.Exists(Application.persistentDataPath + "/SaveData.xml"))
-        {
-            saveData = Load("/SaveData.xml");
-        }
-        else
-        {
-            saveData = new SaveData();
-            Save(saveData, "/SaveData.xml");
-        }
+        //if (File.Exists(Application.persistentDataPath + "/SaveData.xml"))
+        //{
+        //    saveData = Load("/SaveData.xml");
+        //}
+        //else
+        //{
+        //    saveData = new SaveData();
+        //    Save(saveData, "/SaveData.xml");
+        //}
 
         if (File.Exists(Application.persistentDataPath + "/AppSettings.xml"))
         {
@@ -81,13 +81,16 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    public void SaveToCloudButton(GameObject loadObject)
+    public void SaveToCloudButton(GameObject loadObject = null)
     {
-        loadObject.SetActive(true);
+        if (loadObject != null)
+        {
+            loadObject.SetActive(true);
+        }
 
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
         StorageReference storage_ref = storage.GetReferenceFromUrl("gs://utility-logic-194015.appspot.com");
-        StorageReference saveData_ref = storage_ref.Child("SaveData");
+        StorageReference saveData_ref = storage_ref.Child(LoginManager.user.UserId);
 
         // Data in memory
         byte[] saveDataBytes = ObjectToByteArray(saveData);
@@ -100,20 +103,52 @@ public class SaveManager : MonoBehaviour
               {
                   Debug.Log(task.Exception.ToString());
                   loadObject.SetActive(false);
-                  // Uh-oh, an error occurred!
+                  StructureManager.instance.NewNotification("Failed To Save Data");
               }
               else
               {
                   // Metadata contains file metadata such as size, content-type, and download URL.
-                  StorageMetadata metadata = task.Result;
-                  //string download_url = metadata.DownloadUrl.ToString();
-                  //string download_url = saveData_ref.GetDownloadUrlAsync().Result.AbsolutePath;
-                  //Debug.Log("Finished uploading...");
-                  //Debug.Log("download url = " + download_url);
-                  loadObject.SetActive(false);
+                  //StorageMetadata metadata = task.Result;
+
+                  if (loadObject != null)
+                  {
+                      loadObject.SetActive(false);
+                  }
+
                   StructureManager.instance.NewNotification("Saved Data");
               }
           });
+    }
+
+    public void LoadFromCloud()
+    {
+        loadingDataOverlay.SetActive(true);
+
+        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
+        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://utility-logic-194015.appspot.com");
+        StorageReference saveData_ref = storage_ref.Child(LoginManager.user.UserId);
+
+        const long maxAllowedSize = 1 * 1024 * 1024;
+        saveData_ref.GetBytesAsync(maxAllowedSize).ContinueWith((Task<byte[]> task) =>
+        {
+            if (task.IsFaulted)
+            {
+                Debug.Log(task.Exception.ToString());
+                Debug.Log("Created new saveData");
+
+                saveData = new SaveData();
+                loadingDataOverlay.SetActive(false);
+            }
+            else
+            {
+                byte[] fileContents = task.Result;
+                Debug.Log("Finished downloading!");
+
+                saveData = (SaveData)ByteArrayToObject(fileContents);
+                SetLoadedSaveData();
+                loadingDataOverlay.SetActive(false);
+            }
+        });
     }
 
     private byte[] ObjectToByteArray(object obj)
@@ -131,96 +166,46 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    private Object ByteArrayToObject(byte[] arrBytes)
+    private object ByteArrayToObject(byte[] arrBytes)
     {
         MemoryStream memStream = new MemoryStream();
         BinaryFormatter binForm = new BinaryFormatter();
         memStream.Write(arrBytes, 0, arrBytes.Length);
         memStream.Seek(0, SeekOrigin.Begin);
-        Object obj = (Object)binForm.Deserialize(memStream);
+        object obj = binForm.Deserialize(memStream);
 
         return obj;
     }
 
-    public void RestoreFromCloudButton(GameObject loadObject)
+    public void DeleteSavedDataButton(GameObject loadObject)
     {
-        //loadObject.SetActive(true);
+        loadObject.SetActive(true);
 
-        //if (saveData.googleDriveSaveFileId == null || saveData.googleDriveSaveFileId == "")
-        //{
-        //    StartCoroutine(RestoreFromGoogleDriveSaveFileWithName(loadObject));
-        //    return;
-        //}
+        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
+        StorageReference storage_ref = storage.GetReferenceFromUrl("gs://utility-logic-194015.appspot.com");
+        StorageReference saveData_ref = storage_ref.Child(LoginManager.user.UserId);
 
-        //StartCoroutine(RestoreFromGoogleDriveSaveFileWithID(loadObject));
+        saveData_ref.DeleteAsync().ContinueWith(task =>
+        {
+            if (task.IsCompleted)
+            {
+                for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
+                {
+                    Destroy(DataCreationManager.instance.folderHolder.GetChild(i).gameObject);
+                }
+                saveData.dataFolders = new List<DataFolder>();
+                StructureManager.instance.infoBlockPanel.SetActive(false);
+
+                loadObject.SetActive(false);
+                StructureManager.instance.ToggleClearDataPanelButton();
+                StructureManager.instance.NewNotification("Successfully Deleted Saved Data");
+            }
+            else
+            {
+                StructureManager.instance.NewNotification("Failed To Delete Saved Data");
+            }
+        });
     }
-
-    //private IEnumerator RestoreFromGoogleDriveSaveFileWithName(GameObject loadObject)
-    //{
-    //    var request = GoogleDriveFiles.List();
-    //    yield return request.Send();
-
-    //    string saveFileId = "";
-
-    //    for (int i = 0; i < request.ResponseData.Files.Count; i++)
-    //    {
-    //        if (request.ResponseData.Files[i].Name == "PS_SaveData")
-    //        {
-    //            saveFileId = request.ResponseData.Files[i].Id;
-    //            break;
-    //        }
-    //    }
-
-    //    if (saveFileId == "")
-    //    {
-    //        loadObject.SetActive(false);
-    //        StopCoroutine(RestoreFromGoogleDriveSaveFileWithName(loadObject));
-    //    }
-
-    //    var request2 = GoogleDriveFiles.Download(saveFileId);
-    //    yield return request2.Send();
-
-    //    string destination = Application.persistentDataPath + "/SaveData.xml";
-
-    //    File.Delete(destination);
-    //    File.WriteAllBytes(destination, request2.ResponseData.Content);
-
-    //    saveData = Load();
-
-    //    for (int i = 0; i < dataCreationManager.folderHolder.childCount; i++)
-    //    {
-    //        Destroy(dataCreationManager.folderHolder.GetChild(i).gameObject);
-    //    }
-
-    //    SetLoadedSaveData();
-
-    //    loadObject.SetActive(false);
-    //    StructureManager.instance.NewNotification("Restored Data");
-    //}
-
-    //private IEnumerator RestoreFromGoogleDriveSaveFileWithID(GameObject loadObject)
-    //{
-    //    var request = GoogleDriveFiles.Download(saveData.googleDriveSaveFileId);
-    //    yield return request.Send();
-
-    //    string destination = Application.persistentDataPath + "/SaveData.xml";
-
-    //    File.Delete(destination);
-    //    File.WriteAllBytes(destination, request.ResponseData.Content);
-
-    //    saveData = Load();
-
-    //    for (int i = 0; i < dataCreationManager.folderHolder.childCount; i++)
-    //    {
-    //        Destroy(dataCreationManager.folderHolder.GetChild(i).gameObject);
-    //    }
-
-    //    SetLoadedSaveData();
-
-    //    loadObject.SetActive(false);
-    //    StructureManager.instance.dataSavePanel.SetActive(false);
-    //    StructureManager.instance.NewNotification("Restored Data");
-    //}
 
     public SaveData Load(string path)
     {
@@ -260,14 +245,12 @@ public class SaveManager : MonoBehaviour
 
     public void SetLoadedSaveData()
     {
-        InitFirebaseSDK();
-
         StructureManager.instance.SetDefaultColorsFromSaveData(saveData);
         //StructureManager.instance.SetColorsFromSaveData(saveData);
 
         for (int i = 0; i < saveData.dataFolders.Count; i++)
         {
-            dataCreationManager.CreateNewDataFolder(saveData.dataFolders[i]);
+            DataCreationManager.instance.CreateNewDataFolder(saveData.dataFolders[i]);
         }
     }
 
@@ -281,14 +264,22 @@ public class SaveManager : MonoBehaviour
 
     public void OnApplicationQuit()
     {
-        Save(saveData, "/SaveData.xml");
+        //Save(saveData, "/SaveData.xml");
+        if (!LoginManager.instance.loginAccountPanel.activeInHierarchy && !LoginManager.instance.createAccountPanel.activeInHierarchy)
+        {
+            SaveToCloudButton();
+        }
     }
 
     public void OnApplicationPause(bool pause)
     {
         if (pause == true)
         {
-            Save(saveData, "/SaveData.xml");
+            //Save(saveData, "/SaveData.xml");
+            if (!LoginManager.instance.loginAccountPanel.activeInHierarchy && !LoginManager.instance.createAccountPanel.activeInHierarchy)
+            {
+                SaveToCloudButton();
+            }
         }
     }
 }
