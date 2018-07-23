@@ -23,11 +23,6 @@ public class StructureManager : MonoBehaviour
     [Header("Options Panel")]
     public GameObject optionsPanel;
 
-    [Header("Change Pass Panel")]
-    public GameObject changePassPanel;
-    public InputField oldPassText;
-    public InputField newPassText;
-
     [Header("Color Picker")]
     public GameObject colorPickerPanel;
 
@@ -195,7 +190,7 @@ public class StructureManager : MonoBehaviour
 
     public void ToggleChangePassPanelButton()
     {
-        changePassPanel.SetActive(!changePassPanel.activeInHierarchy);
+        LoginManager.instance.changePassPanel.SetActive(!LoginManager.instance.changePassPanel.activeInHierarchy);
         optionsPanel.SetActive(false);
     }
 
@@ -294,47 +289,6 @@ public class StructureManager : MonoBehaviour
     {
         DataCreationManager.instance.folderHolder.GetComponent<RectTransform>().offsetMin = new Vector2(0, DataCreationManager.instance.folderHolderDefaultPos.x);
         DataCreationManager.instance.folderHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, DataCreationManager.instance.folderHolderDefaultPos.y);
-    }
-
-    public void ConfirmNewPassButton()
-    {
-        if (oldPassText.text == SaveManager.saveData.password)
-        {
-            if (!string.IsNullOrEmpty(newPassText.text))
-            {
-                SaveManager.saveData.password = newPassText.text;
-
-                oldPassText.text = null;
-                newPassText.text = null;
-                ToggleChangePassPanelButton();
-
-                NewNotification("Password Changed");
-            }
-            else
-            {
-                NewNotification("Enter A New Password");
-            }
-        }
-        else
-        {
-            if (string.IsNullOrEmpty(oldPassText.text))
-            {
-                NewNotification("Enter Your Old Password");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(newPassText.text))
-            {
-                NewNotification("Enter A New Password");
-                return;
-            }
-
-            if (oldPassText.text != SaveManager.saveData.password)
-            {
-                NewNotification("Wrong Password");
-                return;
-            }
-        }
     }
 
     public void CloseClearDataPanelButton(bool b)

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -77,7 +76,7 @@ public class DataFolderHolder : MonoBehaviour
         {
             nameInputField.text = myDataFolder.folderName;
 
-            customizableImage.color = new Color(myDataFolder.color.r / 255, myDataFolder.color.g / 255, myDataFolder.color.b / 255, myDataFolder.color.a / 255);
+            customizableImage.color = new Color(myDataFolder.color.r, myDataFolder.color.g, myDataFolder.color.b, myDataFolder.color.a);
         }
     }
 

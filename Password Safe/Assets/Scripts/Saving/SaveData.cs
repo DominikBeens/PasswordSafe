@@ -5,8 +5,6 @@ using UnityEngine;
 public class SaveData
 {
 
-    public string password;
-
     public List<DataFolder> dataFolders = new List<DataFolder>();
 
     #region Colors

@@ -24,6 +24,11 @@ public class LoginManager : MonoBehaviour
     [SerializeField] private InputField createPasswordText2;
     [SerializeField] private InputField enterPasswordText;
 
+    [Header("Change Password")]
+    public GameObject changePassPanel;
+    [Space(10)]
+    [SerializeField] private InputField newPasswordText;
+
     private void Awake()
     {
         if (!instance)
@@ -112,6 +117,44 @@ public class LoginManager : MonoBehaviour
         }
     }
 
+    public void ConfirmNewPasswordButton()
+    {
+        Firebase.Auth.FirebaseUser user = auth.CurrentUser;
+
+        if (!string.IsNullOrEmpty(newPasswordText.text))
+        {
+            if (user != null)
+            {
+                string newPassword = newPasswordText.text;
+
+                user.UpdatePasswordAsync(newPassword).ContinueWith(task =>
+                {
+                    if (task.IsCanceled)
+                    {
+                        Debug.LogError("UpdatePasswordAsync was canceled.");
+                        StructureManager.instance.NewNotification("Password Updating Was Canceled");
+                        return;
+                    }
+                    if (task.IsFaulted)
+                    {
+                        Debug.LogError("UpdatePasswordAsync encountered an error: " + task.Exception);
+                        StructureManager.instance.NewNotification("Error: " + task.Exception.InnerExceptions[0].Message);
+                        return;
+                    }
+
+                    newPasswordText.text = null;
+                    StructureManager.instance.ToggleChangePassPanelButton();
+
+                    StructureManager.instance.NewNotification("Password Changed");
+                });
+            }
+        }
+        else
+        {
+            StructureManager.instance.NewNotification("Enter A New Password");
+        }
+    }
+
     private void SignInNewUser()
     {
         string email = createLoginEmailText.text;
@@ -128,15 +171,13 @@ public class LoginManager : MonoBehaviour
             if (task.IsFaulted)
             {
                 Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
-                StructureManager.instance.NewNotification("Error: " + task.Exception.Message);
+                StructureManager.instance.NewNotification("Error: " + task.Exception.InnerExceptions[0].Message);
                 return;
             }
 
             // Firebase user has been created.
             Firebase.Auth.FirebaseUser newUser = task.Result;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
-
-            SaveManager.saveData.password = createPasswordText2.text;
 
             createAccountPanel.SetActive(false);
             loginAccountPanel.SetActive(true);

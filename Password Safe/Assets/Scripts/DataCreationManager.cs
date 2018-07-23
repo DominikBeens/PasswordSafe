@@ -47,7 +47,7 @@ public class DataCreationManager : MonoBehaviour
                                                           current.customizableImage.color.a)
             };
 
-            SaveManager.saveData.dataFolders.Add(newDataFolder.GetComponent<DataFolderHolder>().myDataFolder);
+            SaveManager.saveData.dataFolders.Add(current.myDataFolder);
         }
         else
         {
@@ -75,7 +75,7 @@ public class DataCreationManager : MonoBehaviour
                                                           current.customizableImage.color.a)
             };
 
-            StructureManager.currentDataFolder.myDataBlocks.Add(newDataBlock.GetComponent<DataBlockHolder>().myDataBlock);
+            StructureManager.currentDataFolder.myDataBlocks.Add(current.myDataBlock);
         }
         else
         {

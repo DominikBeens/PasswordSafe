@@ -8,7 +8,6 @@ public class DataBlockHolder : MonoBehaviour
 
     public DataBlock myDataBlock;
 
-    public Text nameText;
     public InputField nameInputField;
 
     public Transform inputFieldHolder;
@@ -25,14 +24,6 @@ public class DataBlockHolder : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
     }
 
-    private void Update()
-    {
-        if (nameInputField.text != null)
-        {
-            nameText.text = nameInputField.text;
-        }
-    }
-
     public void OnValueChanged()
     {
         myDataBlock.dataBlockName = nameInputField.text;
@@ -44,7 +35,7 @@ public class DataBlockHolder : MonoBehaviour
         {
             nameInputField.text = myDataBlock.dataBlockName;
 
-            customizableImage.color = new Color(myDataBlock.color.r / 255, myDataBlock.color.g / 255, myDataBlock.color.b / 255, myDataBlock.color.a / 255);
+            customizableImage.color = new Color(myDataBlock.color.r, myDataBlock.color.g, myDataBlock.color.b, myDataBlock.color.a);
         }
     }
 
