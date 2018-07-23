@@ -221,19 +221,66 @@ public class StructureManager : MonoBehaviour
     public void ResetColorsButton()
     {
         // change colors
-        homeHeaderBackground.color = SaveManager.saveData.defaultHomeHeaderBackgroundColor;
-        homeBackground.color = SaveManager.saveData.defaultHomeBackgroundColor;
-        newFolderBackground.color = SaveManager.saveData.defaultNewDataFolderBackgroundColor;
-        newInfoBlockBackground.color = SaveManager.saveData.defaultNewDataBlockBackgroundColor;
-
-        //inside folder
-        optionsBackground.color = SaveManager.saveData.defaultHomeBackgroundColor;
+        SetDefaultColorsFromSaveData(SaveManager.saveData);
 
         //save
-        SaveManager.saveData.homeHeaderBackgroundColor = homeHeaderBackground.color;
-        SaveManager.saveData.homeBackgroundColor = homeBackground.color;
-        SaveManager.saveData.newDataFolderBackgroundColor = newFolderBackground.color;
-        SaveManager.saveData.newDataBlockBackgroundColor = newInfoBlockBackground.color;
+        SaveManager.instance.SaveAppColors();
+    }
+
+    public void SetColorsFromSaveData(SaveData saveData)
+    {
+        homeHeaderBackground.color = new Color(saveData.homeHeaderBackgroundColor.r,
+                                               saveData.homeHeaderBackgroundColor.g,
+                                               saveData.homeHeaderBackgroundColor.b,
+                                               saveData.homeHeaderBackgroundColor.a);
+
+        homeBackground.color = new Color(saveData.homeBackgroundColor.r,
+                                         saveData.homeBackgroundColor.g,
+                                         saveData.homeBackgroundColor.b,
+                                         saveData.homeBackgroundColor.a);
+
+        newFolderBackground.color = new Color(saveData.newDataFolderBackgroundColor.r,
+                                              saveData.newDataFolderBackgroundColor.g,
+                                              saveData.newDataFolderBackgroundColor.b,
+                                              saveData.newDataFolderBackgroundColor.a);
+
+        newInfoBlockBackground.color = new Color(saveData.newDataBlockBackgroundColor.r,
+                                                 saveData.newDataBlockBackgroundColor.g,
+                                                 saveData.newDataBlockBackgroundColor.b,
+                                                 saveData.newDataBlockBackgroundColor.a);
+        //inside folder
+        optionsBackground.color = new Color(saveData.homeBackgroundColor.r,
+                                            saveData.homeBackgroundColor.g,
+                                            saveData.homeBackgroundColor.b,
+                                            saveData.homeBackgroundColor.a);
+    }
+
+    public void SetDefaultColorsFromSaveData(SaveData saveData)
+    {
+        homeHeaderBackground.color = new Color(saveData.defaultHomeHeaderBackgroundColor.r / 255,
+                                               saveData.defaultHomeHeaderBackgroundColor.g / 255,
+                                               saveData.defaultHomeHeaderBackgroundColor.b / 255,
+                                               saveData.defaultHomeHeaderBackgroundColor.a / 255);
+
+        homeBackground.color = new Color(saveData.defaultHomeBackgroundColor.r / 255,
+                                         saveData.defaultHomeBackgroundColor.g / 255,
+                                         saveData.defaultHomeBackgroundColor.b / 255,
+                                         saveData.defaultHomeBackgroundColor.a / 255);
+
+        newFolderBackground.color = new Color(saveData.defaultNewDataFolderBackgroundColor.r / 255,
+                                              saveData.defaultNewDataFolderBackgroundColor.g / 255,
+                                              saveData.defaultNewDataFolderBackgroundColor.b / 255,
+                                              saveData.defaultNewDataFolderBackgroundColor.a / 255);
+
+        newInfoBlockBackground.color = new Color(saveData.defaultNewDataBlockBackgroundColor.r / 255,
+                                                 saveData.defaultNewDataBlockBackgroundColor.g / 255,
+                                                 saveData.defaultNewDataBlockBackgroundColor.b / 255,
+                                                 saveData.defaultNewDataBlockBackgroundColor.a / 255);
+        //inside folder
+        optionsBackground.color = new Color(saveData.defaultHomeBackgroundColor.r / 255,
+                                            saveData.defaultHomeBackgroundColor.g / 255,
+                                            saveData.defaultHomeBackgroundColor.b / 255,
+                                            saveData.defaultHomeBackgroundColor.a / 255);
     }
 
     private void ChangeCustomizeButtonColors(Button button, Image imageToChange)
@@ -313,8 +360,16 @@ public class StructureManager : MonoBehaviour
     {
         if (!notificationIsActive)
         {
-            notificationMessage.text = message;
             notificationPanel.SetActive(true);
+
+            notificationMessage.text = message;
+
+            RectTransform panelTransform = notificationPanel.GetComponent<RectTransform>();
+            RectTransform textTransform = notificationMessage.GetComponent<RectTransform>();
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(textTransform);
+
+            panelTransform.sizeDelta = new Vector2(textTransform.sizeDelta.x + 35, textTransform.sizeDelta.y + 20);
         }
     }
 }

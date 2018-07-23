@@ -12,5 +12,5 @@ public class DataFolder
 
     public List<DataBlock> myDataBlocks = new List<DataBlock>();
 
-    public Color color;
+    public SaveManager.SerializableColor color;
 }

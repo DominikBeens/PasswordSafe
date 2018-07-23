@@ -1,50 +1,94 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class LoginManager : MonoBehaviour
 {
 
-    public GameObject loginPanel;
+    public static LoginManager instance;
+    private Firebase.Auth.FirebaseAuth auth;
 
-    public InputField createPasswordText1;
-    public InputField createPasswordText2;
+    [SerializeField] private GameObject loginPanel;
+    [SerializeField] private Text headerText;
 
-    public InputField enterPasswordText;
+    [Header("Login Account")]
+    public GameObject loginAccountPanel;
+    [Space(10)]
+    [SerializeField] private InputField enterLoginEmailText;
+    [SerializeField] private InputField enterLoginPasswordText;
 
-    public GameObject enterPasswordPanel;
-    public GameObject createPasswordPanel;
+    [Header("Create Account")]
+    public GameObject createAccountPanel;
+    [Space(10)]
+    [SerializeField] private InputField createLoginEmailText;
+    [SerializeField] private InputField createPasswordText1;
+    [SerializeField] private InputField createPasswordText2;
+    [SerializeField] private InputField enterPasswordText;
 
     private void Awake()
     {
+        if (!instance)
+        {
+            instance = this;
+        }
+        else if (instance && instance != this)
+        {
+            Destroy(this);
+        }
+
+        auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
         loginPanel.SetActive(true);
+    }
+
+    public void OpenLoginPanel(AppSettings appSettings)
+    {
+        if (string.IsNullOrEmpty(appSettings.lastLoggedInEmail))
+        {
+            headerText.text = "Create An Account";
+
+            createAccountPanel.SetActive(true);
+        }
+        else
+        {
+            headerText.text = "Login Your Account";
+
+            enterLoginEmailText.text = appSettings.lastLoggedInEmail;
+            loginAccountPanel.SetActive(true);
+        }
+    }
+
+    public void OpenLoginPanelButton()
+    {
+        headerText.text = "Login Your Account";
+        createAccountPanel.SetActive(false);
+        loginAccountPanel.SetActive(true);
+    }
+
+    public void OpenCreateAccountPanelButton()
+    {
+        headerText.text = "Create An Account";
+        createAccountPanel.SetActive(true);
+        loginAccountPanel.SetActive(false);
     }
 
     public void ConfirmPasswordButton()
     {
-        if (enterPasswordText.text == SaveManager.saveData.password)
-        {
-            SaveManager.instance.SetLoadedSaveData();
+        SignInExistingUser();
 
-            loginPanel.SetActive(false);
-            StructureManager.instance.NewNotification("Welcome");
-        }
-        else
-        {
-            StructureManager.instance.NewNotification("Wrong Password");
-        }
+        //if (enterPasswordText.text == SaveManager.saveData.password)
+        //{
+        //    SignInExistingUser();
+        //}
+        //else
+        //{
+        //    StructureManager.instance.NewNotification("Wrong Password");
+        //}
     }
 
     public void ConfirmPasswordCreationButton()
     {
         if (!string.IsNullOrEmpty(createPasswordText2.text) && string.Equals(createPasswordText2.text, createPasswordText1.text))
         {
-            SaveManager.saveData.password = createPasswordText2.text;
-
-            createPasswordPanel.SetActive(false);
-            enterPasswordPanel.SetActive(true);
-
-            StructureManager.instance.NewNotification("Password Created");
+            SignInNewUser();
         }
         else
         {
@@ -66,5 +110,70 @@ public class LoginManager : MonoBehaviour
                 return;
             }
         }
+    }
+
+    private void SignInNewUser()
+    {
+        string email = createLoginEmailText.text;
+        string password = createPasswordText2.text;
+
+        auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("CreateUserWithEmailAndPasswordAsync was canceled.");
+                StructureManager.instance.NewNotification("Account Creation Canceled");
+                return;
+            }
+            if (task.IsFaulted)
+            {
+                Debug.LogError("CreateUserWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                StructureManager.instance.NewNotification("Error: " + task.Exception.Message);
+                return;
+            }
+
+            // Firebase user has been created.
+            Firebase.Auth.FirebaseUser newUser = task.Result;
+            Debug.LogFormat("Firebase user created successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+
+            SaveManager.saveData.password = createPasswordText2.text;
+
+            createAccountPanel.SetActive(false);
+            loginAccountPanel.SetActive(true);
+
+            StructureManager.instance.NewNotification("Account Created Successfully");
+        });
+    }
+
+    private void SignInExistingUser()
+    {
+        string email = enterLoginEmailText.text;
+        string password = enterLoginPasswordText.text;
+
+        auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("SignInWithEmailAndPasswordAsync was canceled.");
+                StructureManager.instance.NewNotification("User Login Canceled");
+                return;
+            }
+            if (task.IsFaulted)
+            {
+                Debug.LogError("SignInWithEmailAndPasswordAsync encountered an error: " + task.Exception);
+                StructureManager.instance.NewNotification("Error: " + task.Exception.InnerExceptions[0].Message);
+                return;
+            }
+
+            Firebase.Auth.FirebaseUser newUser = task.Result;
+            Debug.LogFormat("User signed in successfully: {0} ({1})", newUser.DisplayName, newUser.UserId);
+
+            SaveManager.instance.SetLoadedSaveData();
+            SaveManager.appSettings.lastLoggedInEmail = email;
+            SaveManager.instance.SaveAppSettings(SaveManager.appSettings);
+
+            loginPanel.SetActive(false);
+            StructureManager.instance.NewNotification("Welcome");
+        });
     }
 }

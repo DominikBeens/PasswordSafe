@@ -83,35 +83,17 @@ public class ColorPicker : MonoBehaviour
     {
         imageToChangeColor.color = newColor;
 
-        if (imageToChangeColor == StructureManager.instance.homeHeaderBackground)
-        {
-            SaveManager.saveData.homeHeaderBackgroundColor = newColor;
-        }
-        else if (imageToChangeColor == StructureManager.instance.homeBackground)
-        {
-            SaveManager.saveData.homeBackgroundColor = newColor;
-
-            //inside folder
-            StructureManager.instance.optionsBackground.color = newColor;
-        }
-        else if (imageToChangeColor == StructureManager.instance.newFolderBackground)
-        {
-            SaveManager.saveData.newDataFolderBackgroundColor = newColor;
-        }
-        else if (imageToChangeColor == StructureManager.instance.newInfoBlockBackground)
-        {
-            SaveManager.saveData.newDataBlockBackgroundColor = newColor;
-        }
+        SaveManager.instance.SaveAppColors();
 
         if (dataObjectToSaveTo != null)
         {
             if (dataObjectToSaveTo.GetComponent<DataFolderHolder>() != null)
             {
-                dataObjectToSaveTo.GetComponent<DataFolderHolder>().myDataFolder.color = newColor;
+                dataObjectToSaveTo.GetComponent<DataFolderHolder>().myDataFolder.color = new SaveManager.SerializableColor(newColor.r, newColor.g, newColor.b, newColor.a);
             }
             else if (dataObjectToSaveTo.GetComponent<DataBlockHolder>() != null)
             {
-                dataObjectToSaveTo.GetComponent<DataBlockHolder>().myDataBlock.color = newColor;
+                dataObjectToSaveTo.GetComponent<DataBlockHolder>().myDataBlock.color = new SaveManager.SerializableColor(newColor.r, newColor.g, newColor.b, newColor.a);
             }
         }
 

@@ -12,5 +12,5 @@ public class DataBlock
 
     public List<DataField> myDataFields = new List<DataField>();
 
-    public Color color;
+    public SaveManager.SerializableColor color;
 }

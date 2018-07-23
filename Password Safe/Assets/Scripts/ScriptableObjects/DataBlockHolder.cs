@@ -44,7 +44,7 @@ public class DataBlockHolder : MonoBehaviour
         {
             nameInputField.text = myDataBlock.dataBlockName;
 
-            customizableImage.color = myDataBlock.color;
+            customizableImage.color = new Color(myDataBlock.color.r / 255, myDataBlock.color.g / 255, myDataBlock.color.b / 255, myDataBlock.color.a / 255);
         }
     }
 

@@ -37,10 +37,14 @@ public class DataCreationManager : MonoBehaviour
 
         if (dataFolder == null)
         {
-            newDataFolder.GetComponent<DataFolderHolder>().myDataFolder = new DataFolder
+            DataFolderHolder current = newDataFolder.GetComponent<DataFolderHolder>();
+            current.myDataFolder = new DataFolder
             {
                 iD = newDataFolder.GetInstanceID(),
-                color = newDataFolder.GetComponent<DataFolderHolder>().customizableImage.color
+                color = new SaveManager.SerializableColor(current.customizableImage.color.r,
+                                                          current.customizableImage.color.g,
+                                                          current.customizableImage.color.b,
+                                                          current.customizableImage.color.a)
             };
 
             SaveManager.saveData.dataFolders.Add(newDataFolder.GetComponent<DataFolderHolder>().myDataFolder);
@@ -61,10 +65,14 @@ public class DataCreationManager : MonoBehaviour
 
         if (dataBlock == null)
         {
-            newDataBlock.GetComponent<DataBlockHolder>().myDataBlock = new DataBlock
+            DataBlockHolder current = newDataBlock.GetComponent<DataBlockHolder>();
+            current.myDataBlock = new DataBlock
             {
                 iD = newDataBlock.GetInstanceID(),
-                color = newDataBlock.GetComponent<DataBlockHolder>().customizableImage.color
+                color = new SaveManager.SerializableColor(current.customizableImage.color.r,
+                                                          current.customizableImage.color.g,
+                                                          current.customizableImage.color.b,
+                                                          current.customizableImage.color.a)
             };
 
             StructureManager.currentDataFolder.myDataBlocks.Add(newDataBlock.GetComponent<DataBlockHolder>().myDataBlock);
