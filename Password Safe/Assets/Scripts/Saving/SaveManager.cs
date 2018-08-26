@@ -25,6 +25,11 @@ public class SaveManager : MonoBehaviour
         {
             this.r = r; this.g = g; this.b = b; this.a = a;
         }
+
+        public SerializableColor(Color color)
+        {
+            r = color.r; g = color.g; b = color.b; a = color.a;
+        }
     }
 
     private void Awake()
@@ -42,16 +47,6 @@ public class SaveManager : MonoBehaviour
 
     private void CheckAppSettings()
     {
-        //if (File.Exists(Application.persistentDataPath + "/SaveData.xml"))
-        //{
-        //    saveData = Load("/SaveData.xml");
-        //}
-        //else
-        //{
-        //    saveData = new SaveData();
-        //    Save(saveData, "/SaveData.xml");
-        //}
-
         if (File.Exists(Application.persistentDataPath + "/AppSettings.xml"))
         {
             appSettings = LoadAppSettings("/AppSettings.xml");
@@ -166,11 +161,11 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    private object ByteArrayToObject(byte[] arrBytes)
+    private object ByteArrayToObject(byte[] bytes)
     {
         MemoryStream memStream = new MemoryStream();
         BinaryFormatter binForm = new BinaryFormatter();
-        memStream.Write(arrBytes, 0, arrBytes.Length);
+        memStream.Write(bytes, 0, bytes.Length);
         memStream.Seek(0, SeekOrigin.Begin);
         object obj = binForm.Deserialize(memStream);
 
@@ -189,15 +184,14 @@ public class SaveManager : MonoBehaviour
         {
             if (task.IsCompleted)
             {
-                for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
+                for (int i = 0; i < StructureManager.instance.folderHolder.childCount; i++)
                 {
-                    Destroy(DataCreationManager.instance.folderHolder.GetChild(i).gameObject);
+                    Destroy(StructureManager.instance.folderHolder.GetChild(i).gameObject);
                 }
                 saveData.dataFolders = new List<DataFolder>();
                 StructureManager.instance.infoBlockPanel.SetActive(false);
 
                 loadObject.SetActive(false);
-                StructureManager.instance.ToggleClearDataPanelButton();
                 StructureManager.instance.NewNotification("Successfully Deleted Saved Data");
             }
             else
@@ -232,21 +226,20 @@ public class SaveManager : MonoBehaviour
             var dependencyStatus = task.Result;
             if (dependencyStatus == Firebase.DependencyStatus.Available)
             {
-                // Set a flag here indiciating that Firebase is ready to use by your
-                // application.
+                // Firebase is ready to use.
             }
             else
             {
+                // Firebase Unity SDK is not ready to use.
                 Debug.LogError(System.String.Format("Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-                // Firebase Unity SDK is not safe to use here.
             }
         });
     }
 
     public void SetLoadedSaveData()
     {
-        StructureManager.instance.SetDefaultColorsFromSaveData(saveData);
-        //StructureManager.instance.SetColorsFromSaveData(saveData);
+        //StructureManager.instance.SetDefaultColorsFromSaveData(saveData);
+        StructureManager.instance.SetColorsFromSaveData(saveData);
 
         for (int i = 0; i < saveData.dataFolders.Count; i++)
         {
@@ -256,15 +249,14 @@ public class SaveManager : MonoBehaviour
 
     public void SaveAppColors()
     {
-        saveData.homeHeaderBackgroundColor = new SerializableColor(StructureManager.instance.homeHeaderBackground.color.r, StructureManager.instance.homeHeaderBackground.color.g, StructureManager.instance.homeHeaderBackground.color.b, StructureManager.instance.homeHeaderBackground.color.a);
-        saveData.homeBackgroundColor = new SerializableColor(StructureManager.instance.homeBackground.color.r, StructureManager.instance.homeBackground.color.g, StructureManager.instance.homeBackground.color.b, StructureManager.instance.homeBackground.color.a);
-        saveData.newDataFolderBackgroundColor = new SerializableColor(StructureManager.instance.newFolderBackground.color.r, StructureManager.instance.newFolderBackground.color.g, StructureManager.instance.newFolderBackground.color.b, StructureManager.instance.newFolderBackground.color.a);
-        saveData.newDataBlockBackgroundColor = new SerializableColor(StructureManager.instance.newInfoBlockBackground.color.r, StructureManager.instance.newInfoBlockBackground.color.g, StructureManager.instance.newInfoBlockBackground.color.b, StructureManager.instance.newInfoBlockBackground.color.a);
+        saveData.homeHeaderBackgroundColor = new SerializableColor(StructureManager.instance.homeHeaderBackground.color);
+        saveData.homeBackgroundColor = new SerializableColor(StructureManager.instance.homeBackground.color);
+        saveData.newDataFolderBackgroundColor = new SerializableColor(StructureManager.instance.newFolderBackground.color);
+        saveData.newDataBlockBackgroundColor = new SerializableColor(StructureManager.instance.newInfoBlockBackground.color);
     }
 
     public void OnApplicationQuit()
     {
-        //Save(saveData, "/SaveData.xml");
         if (!LoginManager.instance.loginAccountPanel.activeInHierarchy && !LoginManager.instance.createAccountPanel.activeInHierarchy)
         {
             SaveToCloudButton();
@@ -275,7 +267,6 @@ public class SaveManager : MonoBehaviour
     {
         if (pause == true)
         {
-            //Save(saveData, "/SaveData.xml");
             if (!LoginManager.instance.loginAccountPanel.activeInHierarchy && !LoginManager.instance.createAccountPanel.activeInHierarchy)
             {
                 SaveToCloudButton();

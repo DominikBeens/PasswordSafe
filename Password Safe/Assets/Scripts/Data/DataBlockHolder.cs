@@ -35,6 +35,7 @@ public class DataBlockHolder : MonoBehaviour
         {
             nameInputField.text = myDataBlock.dataBlockName;
 
+            //TODO: DataCreationManager and this script: data block custom color dont get saved properly, custom folder colors do.
             customizableImage.color = new Color(myDataBlock.color.r, myDataBlock.color.g, myDataBlock.color.b, myDataBlock.color.a);
         }
     }
@@ -46,21 +47,43 @@ public class DataBlockHolder : MonoBehaviour
 
     public void CustomizeButton()
     {
-        ColorPicker.imageToChangeColor = customizableImage;
-        ColorPicker.dataObjectToSaveTo = gameObject;
-        StructureManager.instance.colorPickerPanel.SetActive(true);
-
+        ColorPicker.instance.StartCustomizing(customizableImage, gameObject);
         StartCoroutine(CloseOptions());
     }
 
     public void IncreaseSize()
     {
+        // Dont increase the size with the first data field.
+        if (myDataBlock.myDataFields.Count == 1)
+        {
+            return;
+        }
+
         rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y - 75);
     }
 
     public void DecreaseSize()
     {
+        // Dont decrease the size when its the last data field.
+        if (myDataBlock.myDataFields.Count == 0)
+        {
+            return;
+        }
+
         rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y + 75);
+    }
+
+    public void SetSize(int dataFieldAmount)
+    {
+        // No point in setting a custom size if theres no data fields.
+        if (dataFieldAmount == 0)
+        {
+            return;
+        }
+
+        // Amount of data fields minus one because the first data field doesnt increase the data block size.
+        float bottomSize = (dataFieldAmount - 1) * 75;
+        rectTransform.offsetMin = new Vector2(rectTransform.offsetMin.x, rectTransform.offsetMin.y - bottomSize);
     }
 
     public void ToggleOptionsButton()

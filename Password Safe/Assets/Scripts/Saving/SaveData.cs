@@ -6,6 +6,7 @@ public class SaveData
 
     public List<DataFolder> dataFolders = new List<DataFolder>();
 
+    // TODO: Move color saves to local AppSettings.
     #region Colors
     public SaveManager.SerializableColor defaultHomeHeaderBackgroundColor = new SaveManager.SerializableColor(34, 30, 54, 255);
     public SaveManager.SerializableColor homeHeaderBackgroundColor = new SaveManager.SerializableColor(34, 30, 54, 255);

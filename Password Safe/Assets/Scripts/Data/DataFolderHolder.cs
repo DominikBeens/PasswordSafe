@@ -16,50 +16,50 @@ public class DataFolderHolder : MonoBehaviour
 
     public void OpenFolder()
     {
-        ResetPanelScroll();
+        StructureManager.instance.ResetInfoBlockScroll();
         StructureManager.currentDataFolder = myDataFolder;
 
-        if (DataCreationManager.instance.infoBlockHolder.childCount > 0)
+        if (StructureManager.instance.infoBlockHolder.childCount > 0)
         {
-            for (int i = 0; i < DataCreationManager.instance.infoBlockHolder.childCount; i++)
+            for (int i = 0; i < StructureManager.instance.infoBlockHolder.childCount; i++)
             {
-                Destroy(DataCreationManager.instance.infoBlockHolder.GetChild(i).gameObject);
+                Destroy(StructureManager.instance.infoBlockHolder.GetChild(i).gameObject);
             }
         }
 
         for (int i = 0; i < myDataFolder.myDataBlocks.Count; i++)
         {
-            GameObject newDataBlock = Instantiate(DataCreationManager.instance.infoBlock, DataCreationManager.instance.infoBlockHolder.position, Quaternion.identity);
-            newDataBlock.transform.SetParent(DataCreationManager.instance.infoBlockHolder);
+            GameObject newDataBlock = Instantiate(DataCreationManager.instance.infoBlock, StructureManager.instance.infoBlockHolder.position, Quaternion.identity);
+            newDataBlock.transform.SetParent(StructureManager.instance.infoBlockHolder);
             newDataBlock.transform.localScale = Vector3.one;
 
-            DataBlockHolder dataBlock = newDataBlock.GetComponent<DataBlockHolder>();
+            DataBlockHolder dataBlockHolder = newDataBlock.GetComponent<DataBlockHolder>();
 
-            dataBlock.myDataBlock = myDataFolder.myDataBlocks[i];
+            dataBlockHolder.myDataBlock = myDataFolder.myDataBlocks[i];
 
-            for (int ii = 0; ii < dataBlock.myDataBlock.myDataFields.Count; ii++)
+            for (int ii = 0; ii < dataBlockHolder.myDataBlock.myDataFields.Count; ii++)
             {
-                if (dataBlock.myDataBlock.myDataFields[ii].type == 0)
+                if (dataBlockHolder.myDataBlock.myDataFields[ii].type == 0)
                 {
-                    GameObject newInfoDataField = Instantiate(DataCreationManager.instance.infoInputField, dataBlock.inputFieldHolder.position, Quaternion.identity);
-                    newInfoDataField.transform.SetParent(dataBlock.inputFieldHolder);
+                    GameObject newInfoDataField = Instantiate(DataCreationManager.instance.infoInputField, dataBlockHolder.inputFieldHolder.position, Quaternion.identity);
+                    newInfoDataField.transform.SetParent(dataBlockHolder.inputFieldHolder);
                     newInfoDataField.transform.localScale = Vector3.one;
 
-                    newInfoDataField.GetComponent<DataFieldHolder>().myDataField = dataBlock.myDataBlock.myDataFields[ii];
+                    newInfoDataField.GetComponent<DataFieldHolder>().myDataField = dataBlockHolder.myDataBlock.myDataFields[ii];
                 }
-                else if (dataBlock.myDataBlock.myDataFields[ii].type == 1)
+                else if (dataBlockHolder.myDataBlock.myDataFields[ii].type == 1)
                 {
-                    GameObject newTitleDataField = Instantiate(DataCreationManager.instance.titleInputField, dataBlock.inputFieldHolder.position, Quaternion.identity);
-                    newTitleDataField.transform.SetParent(dataBlock.inputFieldHolder);
+                    GameObject newTitleDataField = Instantiate(DataCreationManager.instance.titleInputField, dataBlockHolder.inputFieldHolder.position, Quaternion.identity);
+                    newTitleDataField.transform.SetParent(dataBlockHolder.inputFieldHolder);
                     newTitleDataField.transform.localScale = Vector3.one;
 
-                    newTitleDataField.GetComponent<DataFieldHolder>().myDataField = dataBlock.myDataBlock.myDataFields[ii];
+                    newTitleDataField.GetComponent<DataFieldHolder>().myDataField = dataBlockHolder.myDataBlock.myDataFields[ii];
                 }
 
-                dataBlock.IncreaseSize();
             }
 
-            dataBlock.Initialize();
+            dataBlockHolder.SetSize(dataBlockHolder.myDataBlock.myDataFields.Count);
+            dataBlockHolder.Initialize();
         }
 
         StructureManager.instance.infoBlockPanel.SetActive(true);
@@ -76,16 +76,13 @@ public class DataFolderHolder : MonoBehaviour
         {
             nameInputField.text = myDataFolder.folderName;
 
-            customizableImage.color = new Color(myDataFolder.color.r, myDataFolder.color.g, myDataFolder.color.b, myDataFolder.color.a);
+            customizableImage.color = new Color(myDataFolder.color.r / 255, myDataFolder.color.g / 255, myDataFolder.color.b / 255, myDataFolder.color.a / 255);
         }
     }
 
     public void CustomizeButton()
     {
-        ColorPicker.imageToChangeColor = customizableImage;
-        ColorPicker.dataObjectToSaveTo = gameObject;
-        StructureManager.instance.colorPickerPanel.SetActive(true);
-
+        ColorPicker.instance.StartCustomizing(customizableImage, gameObject);
         StartCoroutine(CloseOptions());
     }
 
@@ -114,11 +111,5 @@ public class DataFolderHolder : MonoBehaviour
     {
         StructureManager.toDelete = gameObject;
         StructureManager.instance.OpenDeletePanel(0);
-    }
-
-    public void ResetPanelScroll()
-    {
-        DataCreationManager.instance.infoBlockHolder.GetComponent<RectTransform>().offsetMin = new Vector2(0, DataCreationManager.instance.infoBlockHolderDefaultPos.x);
-        DataCreationManager.instance.infoBlockHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, DataCreationManager.instance.infoBlockHolderDefaultPos.y);
     }
 }

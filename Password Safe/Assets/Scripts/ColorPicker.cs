@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class ColorPicker : MonoBehaviour
 {
 
-    public Image colorPreview;
+    public static ColorPicker instance;
+
+    [SerializeField] private GameObject colorPickerPanel;
+    [SerializeField] private Image newColorPreviewImage;
 
     private int rValue;
     public int RValue
@@ -27,12 +28,13 @@ public class ColorPicker : MonoBehaviour
         set { bValue = Mathf.Clamp(value, 0, 255); }
     }
 
-    public Text rValueText;
-    public Text gValueText;
-    public Text bValueText;
+    [Space(10)]
+    [SerializeField] private Text rValueText;
+    [SerializeField] private Text gValueText;
+    [SerializeField] private Text bValueText;
 
-    public static GameObject dataObjectToSaveTo;
-    public static Image imageToChangeColor;
+    private GameObject dataObjectToSaveTo;
+    private Image imageToChangeColor;
     private Color32 newColor;
 
     private int? rGB;
@@ -40,9 +42,21 @@ public class ColorPicker : MonoBehaviour
     private bool mouseDownIncrease;
     private bool mouseDownDecrease;
 
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else if (instance != null && instance != this)
+        {
+            Destroy(this);
+        }
+    }
+
     private void Update()
     {
-        if (gameObject.activeInHierarchy)
+        if (colorPickerPanel.activeInHierarchy)
         {
             rValueText.text = RValue.ToString();
             gValueText.text = GValue.ToString();
@@ -50,7 +64,7 @@ public class ColorPicker : MonoBehaviour
 
             newColor = new Color32(System.Convert.ToByte(RValue), System.Convert.ToByte(GValue), System.Convert.ToByte(BValue), 255);
 
-            colorPreview.color = newColor;
+            newColorPreviewImage.color = newColor;
         }
 
         if (timer > 0)
@@ -70,13 +84,22 @@ public class ColorPicker : MonoBehaviour
         }
     }
 
-    public void OnEnable()
+    public void StartCustomizingButton(Image image)
     {
+        StartCustomizing(image);
+    }
+
+    public void StartCustomizing(Image image, GameObject dataObjectToSaveTo = null)
+    {
+        imageToChangeColor = image;
+        this.dataObjectToSaveTo = dataObjectToSaveTo;
         Color32 color = imageToChangeColor.color;
 
         RValue = color.r;
         GValue = color.g;
         BValue = color.b;
+
+        colorPickerPanel.SetActive(true);
     }
 
     public void ConfirmColor()
@@ -99,10 +122,10 @@ public class ColorPicker : MonoBehaviour
 
         imageToChangeColor = null;
         dataObjectToSaveTo = null;
-        gameObject.SetActive(false);
+        colorPickerPanel.SetActive(false);
     }
 
-    public void IncreaseColorValue(int rGB)
+    private void IncreaseColorValue(int rGB)
     {
         switch (rGB)
         {
@@ -118,7 +141,7 @@ public class ColorPicker : MonoBehaviour
         }
     }
 
-    public void DecreaseColorValue(int rGB)
+    private void DecreaseColorValue(int rGB)
     {
         switch (rGB)
         {

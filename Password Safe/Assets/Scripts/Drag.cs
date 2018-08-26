@@ -15,6 +15,10 @@ public class Drag : MonoBehaviour
     {
         if (dragging)
         {
+#if UNITY_EDITOR
+            return;
+#endif
+
             toDrag.GetComponent<RectTransform>().offsetMin += new Vector2(0, Input.GetTouch(0).deltaPosition.y);
             toDrag.GetComponent<RectTransform>().offsetMax += new Vector2(0, Input.GetTouch(0).deltaPosition.y);
         }

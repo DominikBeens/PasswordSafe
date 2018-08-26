@@ -29,6 +29,11 @@ public class Draggable : MonoBehaviour
     public void BeginDrag()
     {
         drag.dragging = true;
+
+#if UNITY_EDITOR
+        return;
+#endif
+
         drag.beginDragPos = Input.GetTouch(0).position;
     }
 

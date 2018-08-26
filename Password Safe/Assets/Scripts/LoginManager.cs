@@ -144,7 +144,6 @@ public class LoginManager : MonoBehaviour
                     }
 
                     newPasswordText.text = null;
-                    StructureManager.instance.ToggleChangePassPanelButton();
 
                     StructureManager.instance.NewNotification("Password Changed");
                 });

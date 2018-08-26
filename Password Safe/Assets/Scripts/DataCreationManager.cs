@@ -1,20 +1,14 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
 
 public class DataCreationManager : MonoBehaviour
 {
 
     public static DataCreationManager instance;
 
-    public Vector2 folderHolderDefaultPos;
-    public Transform folderHolder;
+    [Header("Data Prefabs")]
     public GameObject folder;
-
-    public Vector2 infoBlockHolderDefaultPos;
-    public Transform infoBlockHolder;
     public GameObject infoBlock;
-
+    [Space(10)]
     public GameObject infoInputField;
     public GameObject titleInputField;
 
@@ -24,15 +18,12 @@ public class DataCreationManager : MonoBehaviour
         {
             instance = this;
         }
-
-        folderHolderDefaultPos = new Vector2(folderHolder.GetComponent<RectTransform>().offsetMin.y, folderHolder.GetComponent<RectTransform>().offsetMax.y);
-        infoBlockHolderDefaultPos = new Vector2(infoBlockHolder.GetComponent<RectTransform>().offsetMin.y, infoBlockHolder.GetComponent<RectTransform>().offsetMax.y);
     }
 
     public void CreateNewDataFolder(DataFolder dataFolder)
     {
-        GameObject newDataFolder = Instantiate(folder, folderHolder.position, Quaternion.identity);
-        newDataFolder.transform.SetParent(folderHolder);
+        GameObject newDataFolder = Instantiate(folder, StructureManager.instance.folderHolder.position, Quaternion.identity);
+        newDataFolder.transform.SetParent(StructureManager.instance.folderHolder);
         newDataFolder.transform.localScale = Vector3.one;
 
         if (dataFolder == null)
@@ -41,10 +32,7 @@ public class DataCreationManager : MonoBehaviour
             current.myDataFolder = new DataFolder
             {
                 iD = newDataFolder.GetInstanceID(),
-                color = new SaveManager.SerializableColor(current.customizableImage.color.r,
-                                                          current.customizableImage.color.g,
-                                                          current.customizableImage.color.b,
-                                                          current.customizableImage.color.a)
+                color = new SaveManager.SerializableColor(current.customizableImage.color * 255)
             };
 
             SaveManager.saveData.dataFolders.Add(current.myDataFolder);
@@ -59,8 +47,8 @@ public class DataCreationManager : MonoBehaviour
 
     public void CreateNewDataBlock(DataBlock dataBlock)
     {
-        GameObject newDataBlock = Instantiate(infoBlock, infoBlockHolder.position, Quaternion.identity);
-        newDataBlock.transform.SetParent(infoBlockHolder);
+        GameObject newDataBlock = Instantiate(infoBlock, StructureManager.instance.infoBlockHolder.position, Quaternion.identity);
+        newDataBlock.transform.SetParent(StructureManager.instance.infoBlockHolder);
         newDataBlock.transform.localScale = Vector3.one;
 
         if (dataBlock == null)
@@ -69,10 +57,7 @@ public class DataCreationManager : MonoBehaviour
             current.myDataBlock = new DataBlock
             {
                 iD = newDataBlock.GetInstanceID(),
-                color = new SaveManager.SerializableColor(current.customizableImage.color.r,
-                                                          current.customizableImage.color.g,
-                                                          current.customizableImage.color.b,
-                                                          current.customizableImage.color.a)
+                color = new SaveManager.SerializableColor(current.customizableImage.color)
             };
 
             StructureManager.currentDataFolder.myDataBlocks.Add(current.myDataBlock);

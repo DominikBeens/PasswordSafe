@@ -7,45 +7,40 @@ public class StructureManager : MonoBehaviour
 {
 
     public static StructureManager instance;
+
     public static DataFolder currentDataFolder;
 
     public GameObject infoBlockPanel;
 
+    private Vector2 folderHolderDefaultPos;
+    public Transform folderHolder;
+
+    private Vector2 infoBlockHolderDefaultPos;
+    public Transform infoBlockHolder;
+
     [Header("Delete Panel")]
-    public GameObject deletePanel;
-    public Text deletePanelHeaderText;
-    public Animator deletePanelAnim;
-    [Space(10)]
-    public GameObject clearDataPanel;
+    [SerializeField] private GameObject deletePanel;
+    [SerializeField] private Text deletePanelHeaderText;
 
     public static GameObject toDelete;
 
-    [Header("Options Panel")]
-    public GameObject optionsPanel;
-
-    [Header("Color Picker")]
-    public GameObject colorPickerPanel;
-
     [Header("Customize Picker")]
-    public GameObject customizePanel;
+    [SerializeField] private GameObject customizePanel;
     [Space(10)]
-    public Button customizeHomeHeaderButton;
+    [SerializeField] private Image homeHeaderBackgroundColorPreview;
     public Image homeHeaderBackground;
     [Space(10)]
-    public Button customizeHomeBackgroundButton;
+    [SerializeField] private Image homeBackgroundColorPreview;
     public Image homeBackground;
     [Space(10)]
-    public Button customizeNewFolderHeaderButton;
+    [SerializeField] private Image newFolderBackgroundColorPreview;
     public Image newFolderBackground;
     [Space(10)]
-    public Button customizeNewInfoBlockHeaderButton;
+    [SerializeField] private Image newInfoBlockBackgroundColorPreview;
     public Image newInfoBlockBackground;
     [Space(10)]
-    public Button customizeOptionsBackgroundButton;
+    [SerializeField] private Image optionsBackgroundColorPreview;
     public Image optionsBackground;
-
-    [Header("Data Saving Panel")]
-    public GameObject dataSavePanel;
 
     [Header("Notification Panel")]
     public GameObject notificationPanel;
@@ -64,6 +59,9 @@ public class StructureManager : MonoBehaviour
             Destroy(this);
         }
 
+        folderHolderDefaultPos = new Vector2(folderHolder.GetComponent<RectTransform>().offsetMin.y, folderHolder.GetComponent<RectTransform>().offsetMax.y);
+        infoBlockHolderDefaultPos = new Vector2(infoBlockHolder.GetComponent<RectTransform>().offsetMin.y, infoBlockHolder.GetComponent<RectTransform>().offsetMax.y);
+
         notificationPanel.SetActive(false);
     }
 
@@ -71,11 +69,11 @@ public class StructureManager : MonoBehaviour
     {
         if (customizePanel.activeInHierarchy)
         {
-            ChangeCustomizeButtonColors(customizeHomeHeaderButton, homeHeaderBackground);
-            ChangeCustomizeButtonColors(customizeHomeBackgroundButton, homeBackground);
-            ChangeCustomizeButtonColors(customizeNewFolderHeaderButton, newFolderBackground);
-            ChangeCustomizeButtonColors(customizeNewInfoBlockHeaderButton, newInfoBlockBackground);
-            ChangeCustomizeButtonColors(customizeOptionsBackgroundButton, optionsBackground);
+            homeHeaderBackgroundColorPreview.color = homeHeaderBackground.color;
+            homeBackgroundColorPreview.color = homeBackground.color;
+            newFolderBackgroundColorPreview.color = newFolderBackground.color;
+            newInfoBlockBackgroundColorPreview.color = newInfoBlockBackground.color;
+            optionsBackgroundColorPreview.color = optionsBackground.color;
         }
     }
 
@@ -93,7 +91,7 @@ public class StructureManager : MonoBehaviour
     {
         infoBlockPanel.SetActive(false);
         currentDataFolder = null;
-        ResetPanelScroll();
+        ResetFolderScroll();
     }
 
     public void OpenDeletePanel(int i)
@@ -178,49 +176,11 @@ public class StructureManager : MonoBehaviour
         deletePanel.SetActive(false);
     }
 
-    public void ToggleOptionsPanelButton()
-    {
-        optionsPanel.SetActive(!optionsPanel.activeInHierarchy);
-        customizePanel.SetActive(false);
-    }
-
-    public void ToggleCustomizePanelButton()
-    {
-        customizePanel.SetActive(!customizePanel.activeInHierarchy);
-        optionsPanel.SetActive(false);
-    }
-
-    public void ToggleChangePassPanelButton()
-    {
-        LoginManager.instance.changePassPanel.SetActive(!LoginManager.instance.changePassPanel.activeInHierarchy);
-        optionsPanel.SetActive(false);
-    }
-
-    public void ToggleClearDataPanelButton()
-    {
-        clearDataPanel.SetActive(!clearDataPanel.activeInHierarchy);
-        dataSavePanel.SetActive(false);
-    }
-
-    public void ToggleDataSavePanelButton()
-    {
-        dataSavePanel.SetActive(!dataSavePanel.activeInHierarchy);
-        optionsPanel.SetActive(false);
-    }
-
-    public void CustomizeButton(Image image)
-    {
-        ColorPicker.imageToChangeColor = image;
-        customizePanel.SetActive(false);
-        colorPickerPanel.SetActive(true);
-    }
-
     public void ResetColorsButton()
     {
-        // change colors
+        // Sets the default colors.
         SetDefaultColorsFromSaveData(SaveManager.saveData);
-
-        //save
+        // Saves the current set of colors.
         SaveManager.instance.SaveAppColors();
     }
 
@@ -280,17 +240,16 @@ public class StructureManager : MonoBehaviour
                                             saveData.defaultHomeBackgroundColor.a / 255);
     }
 
-    private void ChangeCustomizeButtonColors(Button button, Image imageToChange)
+    private void ResetFolderScroll()
     {
-        ColorBlock colorBlock = button.colors;
-        colorBlock.normalColor = imageToChange.color;
-        button.colors = colorBlock;
+        folderHolder.GetComponent<RectTransform>().offsetMin = new Vector2(0, folderHolderDefaultPos.x);
+        folderHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, folderHolderDefaultPos.y);
     }
 
-    private void ResetPanelScroll()
+    public void ResetInfoBlockScroll()
     {
-        DataCreationManager.instance.folderHolder.GetComponent<RectTransform>().offsetMin = new Vector2(0, DataCreationManager.instance.folderHolderDefaultPos.x);
-        DataCreationManager.instance.folderHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, DataCreationManager.instance.folderHolderDefaultPos.y);
+        infoBlockHolder.GetComponent<RectTransform>().offsetMin = new Vector2(0, infoBlockHolderDefaultPos.x);
+        infoBlockHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, infoBlockHolderDefaultPos.y);
     }
 
     //public void CloseClearDataPanelButton(bool b)
