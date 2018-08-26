@@ -41,4 +41,10 @@ public class Draggable : MonoBehaviour
     {
         drag.dragging = false;
     }
+
+    //public void Test()
+    //{
+    //    UnityEngine.UI.ScrollRect test = GetComponentInParent<UnityEngine.UI.ScrollRect>();
+    //    test.verticalNormalizedPosition += Input.GetTouch(0).deltaPosition.magnitude;
+    //}
 }
