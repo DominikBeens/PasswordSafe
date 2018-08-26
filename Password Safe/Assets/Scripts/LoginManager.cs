@@ -13,12 +13,14 @@ public class LoginManager : MonoBehaviour
 
     [Header("Login Account")]
     public GameObject loginAccountPanel;
+    [SerializeField] private GameObject onLoggingInOverlay;
     [Space(10)]
     [SerializeField] private InputField enterLoginEmailText;
     [SerializeField] private InputField enterLoginPasswordText;
 
     [Header("Create Account")]
     public GameObject createAccountPanel;
+    [SerializeField] private GameObject onCreatingAccountOverlay;
     [Space(10)]
     [SerializeField] private InputField createLoginEmailText;
     [SerializeField] private InputField createPasswordText1;
@@ -160,6 +162,8 @@ public class LoginManager : MonoBehaviour
         string email = createLoginEmailText.text;
         string password = createPasswordText2.text;
 
+        onCreatingAccountOverlay.SetActive(true);
+
         auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
         {
             if (task.IsCanceled)
@@ -181,6 +185,7 @@ public class LoginManager : MonoBehaviour
 
             user = auth.CurrentUser;
 
+            onCreatingAccountOverlay.SetActive(false);
             createAccountPanel.SetActive(false);
             loginAccountPanel.SetActive(true);
 
@@ -192,6 +197,8 @@ public class LoginManager : MonoBehaviour
     {
         string email = enterLoginEmailText.text;
         string password = enterLoginPasswordText.text;
+
+        onLoggingInOverlay.SetActive(true);
 
         auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
         {
@@ -217,7 +224,9 @@ public class LoginManager : MonoBehaviour
             SaveManager.appSettings.lastLoggedInEmail = email;
             SaveManager.instance.SaveAppSettings(SaveManager.appSettings);
 
+            onLoggingInOverlay.SetActive(false);
             loginPanel.SetActive(false);
+
             StructureManager.instance.NewNotification("Welcome");
         });
     }
