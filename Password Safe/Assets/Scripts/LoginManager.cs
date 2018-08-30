@@ -222,7 +222,7 @@ public class LoginManager : MonoBehaviour
 
             SaveManager.instance.LoadFromCloud();
             SaveManager.appSettings.lastLoggedInEmail = email;
-            SaveManager.instance.SaveAppSettings(SaveManager.appSettings);
+            SaveManager.instance.SaveAppSettingsToFile(SaveManager.appSettings);
 
             onLoggingInOverlay.SetActive(false);
             loginPanel.SetActive(false);

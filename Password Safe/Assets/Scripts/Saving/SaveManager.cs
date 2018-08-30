@@ -40,22 +40,23 @@ public class SaveManager : MonoBehaviour
         }
 
         InitFirebaseSDK();
-
-        CheckAppSettings();
+        LoadAppSettings();
         LoginManager.instance.OpenLoginPanel(appSettings);
     }
 
-    private void CheckAppSettings()
+    private void LoadAppSettings()
     {
         if (File.Exists(Application.persistentDataPath + "/AppSettings.xml"))
         {
-            appSettings = LoadAppSettings("/AppSettings.xml");
+            appSettings = LoadAppSettingsFromFile();
         }
         else
         {
             appSettings = new AppSettings();
-            SaveAppSettings(appSettings);
+            SaveAppSettingsToFile(appSettings);
         }
+
+        StructureManager.instance.LoadColorsFromAppSettings(appSettings);
     }
 
     public void Save(SaveData toSave, string path)
@@ -67,7 +68,7 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    public void SaveAppSettings(AppSettings toSave)
+    public void SaveAppSettingsToFile(AppSettings toSave)
     {
         var serializer = new XmlSerializer(typeof(AppSettings));
         using (var stream = new FileStream(Application.persistentDataPath + "/AppSettings.xml", FileMode.Create))
@@ -210,10 +211,10 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    public AppSettings LoadAppSettings(string path)
+    public AppSettings LoadAppSettingsFromFile()
     {
         var serializer = new XmlSerializer(typeof(AppSettings));
-        using (var stream = new FileStream(Application.persistentDataPath + path, FileMode.Open))
+        using (var stream = new FileStream(Application.persistentDataPath + "/AppSettings.xml", FileMode.Open))
         {
             return serializer.Deserialize(stream) as AppSettings;
         }
@@ -238,9 +239,6 @@ public class SaveManager : MonoBehaviour
 
     public void SetLoadedSaveData()
     {
-        //StructureManager.instance.SetDefaultColorsFromSaveData(saveData);
-        StructureManager.instance.SetColorsFromSaveData(saveData);
-
         for (int i = 0; i < saveData.dataFolders.Count; i++)
         {
             DataCreationManager.instance.CreateNewDataFolder(saveData.dataFolders[i]);
@@ -249,10 +247,10 @@ public class SaveManager : MonoBehaviour
 
     public void SaveAppColors()
     {
-        saveData.homeHeaderBackgroundColor = new SerializableColor(StructureManager.instance.homeHeaderBackground.color);
-        saveData.homeBackgroundColor = new SerializableColor(StructureManager.instance.homeBackground.color);
-        saveData.newDataFolderBackgroundColor = new SerializableColor(StructureManager.instance.newFolderBackground.color);
-        saveData.newDataBlockBackgroundColor = new SerializableColor(StructureManager.instance.newInfoBlockBackground.color);
+        appSettings.homeHeaderBackgroundColor = new SerializableColor(StructureManager.instance.homeHeaderBackground.color);
+        appSettings.homeBackgroundColor = new SerializableColor(StructureManager.instance.homeBackground.color);
+        appSettings.newDataFolderBackgroundColor = new SerializableColor(StructureManager.instance.newFolderBackground.color);
+        appSettings.newDataBlockBackgroundColor = new SerializableColor(StructureManager.instance.newInfoBlockBackground.color);
     }
 
     public void OnApplicationQuit()
@@ -260,6 +258,7 @@ public class SaveManager : MonoBehaviour
         if (!LoginManager.instance.loginAccountPanel.activeInHierarchy && !LoginManager.instance.createAccountPanel.activeInHierarchy)
         {
             SaveToCloudButton();
+            SaveAppSettingsToFile(appSettings);
         }
     }
 
@@ -270,6 +269,7 @@ public class SaveManager : MonoBehaviour
             if (!LoginManager.instance.loginAccountPanel.activeInHierarchy && !LoginManager.instance.createAccountPanel.activeInHierarchy)
             {
                 SaveToCloudButton();
+                SaveAppSettingsToFile(appSettings);
             }
         }
     }

@@ -179,65 +179,65 @@ public class StructureManager : MonoBehaviour
     public void ResetColorsButton()
     {
         // Sets the default colors.
-        SetDefaultColorsFromSaveData(SaveManager.saveData);
+        SetDefaultColorsFromSaveData(SaveManager.appSettings);
         // Saves the current set of colors.
         SaveManager.instance.SaveAppColors();
     }
 
-    public void SetColorsFromSaveData(SaveData saveData)
+    public void LoadColorsFromAppSettings(AppSettings appSettings)
     {
-        homeHeaderBackground.color = new Color(saveData.homeHeaderBackgroundColor.r,
-                                               saveData.homeHeaderBackgroundColor.g,
-                                               saveData.homeHeaderBackgroundColor.b,
-                                               saveData.homeHeaderBackgroundColor.a);
+        homeHeaderBackground.color = new Color(appSettings.homeHeaderBackgroundColor.r,
+                                               appSettings.homeHeaderBackgroundColor.g,
+                                               appSettings.homeHeaderBackgroundColor.b,
+                                               appSettings.homeHeaderBackgroundColor.a);
 
-        homeBackground.color = new Color(saveData.homeBackgroundColor.r,
-                                         saveData.homeBackgroundColor.g,
-                                         saveData.homeBackgroundColor.b,
-                                         saveData.homeBackgroundColor.a);
+        homeBackground.color = new Color(appSettings.homeBackgroundColor.r,
+                                         appSettings.homeBackgroundColor.g,
+                                         appSettings.homeBackgroundColor.b,
+                                         appSettings.homeBackgroundColor.a);
 
-        newFolderBackground.color = new Color(saveData.newDataFolderBackgroundColor.r,
-                                              saveData.newDataFolderBackgroundColor.g,
-                                              saveData.newDataFolderBackgroundColor.b,
-                                              saveData.newDataFolderBackgroundColor.a);
+        newFolderBackground.color = new Color(appSettings.newDataFolderBackgroundColor.r,
+                                              appSettings.newDataFolderBackgroundColor.g,
+                                              appSettings.newDataFolderBackgroundColor.b,
+                                              appSettings.newDataFolderBackgroundColor.a);
 
-        newInfoBlockBackground.color = new Color(saveData.newDataBlockBackgroundColor.r,
-                                                 saveData.newDataBlockBackgroundColor.g,
-                                                 saveData.newDataBlockBackgroundColor.b,
-                                                 saveData.newDataBlockBackgroundColor.a);
+        newInfoBlockBackground.color = new Color(appSettings.newDataBlockBackgroundColor.r,
+                                                 appSettings.newDataBlockBackgroundColor.g,
+                                                 appSettings.newDataBlockBackgroundColor.b,
+                                                 appSettings.newDataBlockBackgroundColor.a);
         //inside folder
-        optionsBackground.color = new Color(saveData.homeBackgroundColor.r,
-                                            saveData.homeBackgroundColor.g,
-                                            saveData.homeBackgroundColor.b,
-                                            saveData.homeBackgroundColor.a);
+        optionsBackground.color = new Color(appSettings.homeBackgroundColor.r,
+                                            appSettings.homeBackgroundColor.g,
+                                            appSettings.homeBackgroundColor.b,
+                                            appSettings.homeBackgroundColor.a);
     }
 
-    public void SetDefaultColorsFromSaveData(SaveData saveData)
+    public void SetDefaultColorsFromSaveData(AppSettings appSettings)
     {
-        homeHeaderBackground.color = new Color(saveData.defaultHomeHeaderBackgroundColor.r / 255,
-                                               saveData.defaultHomeHeaderBackgroundColor.g / 255,
-                                               saveData.defaultHomeHeaderBackgroundColor.b / 255,
-                                               saveData.defaultHomeHeaderBackgroundColor.a / 255);
+        homeHeaderBackground.color = new Color(appSettings.defaultHomeHeaderBackgroundColor.r,
+                                               appSettings.defaultHomeHeaderBackgroundColor.g,
+                                               appSettings.defaultHomeHeaderBackgroundColor.b,
+                                               appSettings.defaultHomeHeaderBackgroundColor.a);
 
-        homeBackground.color = new Color(saveData.defaultHomeBackgroundColor.r / 255,
-                                         saveData.defaultHomeBackgroundColor.g / 255,
-                                         saveData.defaultHomeBackgroundColor.b / 255,
-                                         saveData.defaultHomeBackgroundColor.a / 255);
+        homeBackground.color = new Color(appSettings.defaultHomeBackgroundColor.r,
+                                         appSettings.defaultHomeBackgroundColor.g,
+                                         appSettings.defaultHomeBackgroundColor.b,
+                                         appSettings.defaultHomeBackgroundColor.a);
 
-        newFolderBackground.color = new Color(saveData.defaultNewDataFolderBackgroundColor.r / 255,
-                                              saveData.defaultNewDataFolderBackgroundColor.g / 255,
-                                              saveData.defaultNewDataFolderBackgroundColor.b / 255,
-                                              saveData.defaultNewDataFolderBackgroundColor.a / 255);
+        newFolderBackground.color = new Color(appSettings.defaultNewDataFolderBackgroundColor.r,
+                                              appSettings.defaultNewDataFolderBackgroundColor.g,
+                                              appSettings.defaultNewDataFolderBackgroundColor.b,
+                                              appSettings.defaultNewDataFolderBackgroundColor.a);
 
-        newInfoBlockBackground.color = new Color(saveData.defaultNewDataBlockBackgroundColor.r / 255,
-                                                 saveData.defaultNewDataBlockBackgroundColor.g / 255,
-                                                 saveData.defaultNewDataBlockBackgroundColor.b / 255,
-                                                 saveData.defaultNewDataBlockBackgroundColor.a / 255);
+        newInfoBlockBackground.color = new Color(appSettings.defaultNewDataBlockBackgroundColor.r,
+                                                 appSettings.defaultNewDataBlockBackgroundColor.g,
+                                                 appSettings.defaultNewDataBlockBackgroundColor.b,
+                                                 appSettings.defaultNewDataBlockBackgroundColor.a);
         //inside folder
-        optionsBackground.color = new Color(saveData.defaultHomeBackgroundColor.r / 255,
-                                            saveData.defaultHomeBackgroundColor.g / 255,
-                                            saveData.defaultHomeBackgroundColor.b / 255,
-                                            saveData.defaultHomeBackgroundColor.a / 255);
+        optionsBackground.color = new Color(appSettings.defaultHomeBackgroundColor.r,
+                                            appSettings.defaultHomeBackgroundColor.g,
+                                            appSettings.defaultHomeBackgroundColor.b,
+                                            appSettings.defaultHomeBackgroundColor.a);
     }
 
     private void ResetFolderScroll()
