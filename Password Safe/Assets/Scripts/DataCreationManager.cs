@@ -57,7 +57,7 @@ public class DataCreationManager : MonoBehaviour
             current.myDataBlock = new DataBlock
             {
                 iD = newDataBlock.GetInstanceID(),
-                color = new SaveManager.SerializableColor(current.customizableImage.color)
+                color = new SaveManager.SerializableColor(current.customizableImage.color * 255)
             };
 
             StructureManager.currentDataFolder.myDataBlocks.Add(current.myDataBlock);

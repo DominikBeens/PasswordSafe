@@ -30,6 +30,11 @@ public class SaveManager : MonoBehaviour
         {
             r = color.r; g = color.g; b = color.b; a = color.a;
         }
+
+        public Color GetColor()
+        {
+            return new Color(r, g, b, a);
+        }
     }
 
     private void Awake()
@@ -44,6 +49,23 @@ public class SaveManager : MonoBehaviour
         LoginManager.instance.OpenLoginPanel(appSettings);
     }
 
+    private void InitFirebaseSDK()
+    {
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        {
+            var dependencyStatus = task.Result;
+            if (dependencyStatus == Firebase.DependencyStatus.Available)
+            {
+                // Firebase is ready to use.
+            }
+            else
+            {
+                // Firebase Unity SDK is not ready to use.
+                Debug.LogError(System.String.Format("Could not resolve all Firebase dependencies: {0}", dependencyStatus));
+            }
+        });
+    }
+
     private void LoadAppSettings()
     {
         if (File.Exists(Application.persistentDataPath + "/AppSettings.xml"))
@@ -56,15 +78,15 @@ public class SaveManager : MonoBehaviour
             SaveAppSettingsToFile(appSettings);
         }
 
-        StructureManager.instance.LoadColorsFromAppSettings(appSettings);
+        LoadColorsFromAppSettings();
     }
 
-    public void Save(SaveData toSave, string path)
+    private AppSettings LoadAppSettingsFromFile()
     {
-        var serializer = new XmlSerializer(typeof(SaveData));
-        using (var stream = new FileStream(Application.persistentDataPath + path, FileMode.Create))
+        var serializer = new XmlSerializer(typeof(AppSettings));
+        using (var stream = new FileStream(Application.persistentDataPath + "/AppSettings.xml", FileMode.Open))
         {
-            serializer.Serialize(stream, toSave);
+            return serializer.Deserialize(stream) as AppSettings;
         }
     }
 
@@ -202,42 +224,7 @@ public class SaveManager : MonoBehaviour
         });
     }
 
-    public SaveData Load(string path)
-    {
-        var serializer = new XmlSerializer(typeof(SaveData));
-        using (var stream = new FileStream(Application.persistentDataPath + path, FileMode.Open))
-        {
-            return serializer.Deserialize(stream) as SaveData;
-        }
-    }
-
-    public AppSettings LoadAppSettingsFromFile()
-    {
-        var serializer = new XmlSerializer(typeof(AppSettings));
-        using (var stream = new FileStream(Application.persistentDataPath + "/AppSettings.xml", FileMode.Open))
-        {
-            return serializer.Deserialize(stream) as AppSettings;
-        }
-    }
-
-    private void InitFirebaseSDK()
-    {
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
-        {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
-            {
-                // Firebase is ready to use.
-            }
-            else
-            {
-                // Firebase Unity SDK is not ready to use.
-                Debug.LogError(System.String.Format("Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-            }
-        });
-    }
-
-    public void SetLoadedSaveData()
+    private void SetLoadedSaveData()
     {
         for (int i = 0; i < saveData.dataFolders.Count; i++)
         {
@@ -251,6 +238,32 @@ public class SaveManager : MonoBehaviour
         appSettings.homeBackgroundColor = new SerializableColor(StructureManager.instance.homeBackground.color);
         appSettings.newDataFolderBackgroundColor = new SerializableColor(StructureManager.instance.newFolderBackground.color);
         appSettings.newDataBlockBackgroundColor = new SerializableColor(StructureManager.instance.newInfoBlockBackground.color);
+    }
+
+    private void LoadColorsFromAppSettings()
+    {
+        // Cache StructureManager instance for better readability.
+        StructureManager sm = StructureManager.instance;
+
+        sm.homeHeaderBackground.color = appSettings.homeHeaderBackgroundColor.GetColor();
+        sm.homeBackground.color = appSettings.homeBackgroundColor.GetColor();
+        sm.newFolderBackground.color = appSettings.newDataFolderBackgroundColor.GetColor();
+        sm.newInfoBlockBackground.color = appSettings.newDataBlockBackgroundColor.GetColor();
+        //inside folder
+        sm.optionsBackground.color = appSettings.homeBackgroundColor.GetColor();
+    }
+
+    public void LoadDefaultColorsFromAppSettings()
+    {
+        // Cache StructureManager instance for better readability.
+        StructureManager sm = StructureManager.instance;
+
+        sm.homeHeaderBackground.color = appSettings.defaultHomeHeaderBackgroundColor.GetColor();
+        sm.homeBackground.color = appSettings.defaultHomeBackgroundColor.GetColor();
+        sm.newFolderBackground.color = appSettings.defaultNewDataFolderBackgroundColor.GetColor();
+        sm.newInfoBlockBackground.color = appSettings.defaultNewDataBlockBackgroundColor.GetColor();
+        //inside folder
+        sm.optionsBackground.color = appSettings.defaultHomeBackgroundColor.GetColor();
     }
 
     public void OnApplicationQuit()

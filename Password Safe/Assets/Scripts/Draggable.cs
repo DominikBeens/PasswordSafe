@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// NOTE:
+// Old class. Not in use right now.
 public class Draggable : MonoBehaviour
 {
 

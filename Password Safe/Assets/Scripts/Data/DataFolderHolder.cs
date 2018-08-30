@@ -76,7 +76,7 @@ public class DataFolderHolder : MonoBehaviour
         {
             nameInputField.text = myDataFolder.folderName;
 
-            customizableImage.color = new Color(myDataFolder.color.r / 255, myDataFolder.color.g / 255, myDataFolder.color.b / 255, myDataFolder.color.a / 255);
+            customizableImage.color = myDataFolder.color.GetColor() / 255;
         }
     }
 

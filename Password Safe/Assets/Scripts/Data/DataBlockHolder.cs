@@ -35,8 +35,7 @@ public class DataBlockHolder : MonoBehaviour
         {
             nameInputField.text = myDataBlock.dataBlockName;
 
-            //TODO: DataCreationManager and this script: data block custom color dont get saved properly, custom folder colors do.
-            customizableImage.color = new Color(myDataBlock.color.r, myDataBlock.color.g, myDataBlock.color.b, myDataBlock.color.a);
+            customizableImage.color = myDataBlock.color.GetColor() / 255;
         }
     }
 

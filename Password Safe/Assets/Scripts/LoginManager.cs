@@ -81,15 +81,6 @@ public class LoginManager : MonoBehaviour
     public void ConfirmPasswordButton()
     {
         SignInExistingUser();
-
-        //if (enterPasswordText.text == SaveManager.saveData.password)
-        //{
-        //    SignInExistingUser();
-        //}
-        //else
-        //{
-        //    StructureManager.instance.NewNotification("Wrong Password");
-        //}
     }
 
     public void ConfirmPasswordCreationButton()

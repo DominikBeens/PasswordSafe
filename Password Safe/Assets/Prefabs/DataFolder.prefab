@@ -908,6 +908,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224671323355482708}
   - component: {fileID: 114301127224461678}
+  - component: {fileID: 3150817581350093597}
   m_Layer: 5
   m_Name: DataFolder
   m_TagString: Untagged
@@ -961,6 +962,25 @@ MonoBehaviour:
   optionsPanel: {fileID: 1891036855987610}
   anim: {fileID: 95921370358118410}
   customizableImage: {fileID: 114110769809023916}
+--- !u!95 &3150817581350093597
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1312178884243838}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4ef9a09b556fec94d8f5fad36e1534e0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1405507765583788
 GameObject:
   m_ObjectHideFlags: 0

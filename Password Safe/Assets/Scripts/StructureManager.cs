@@ -179,65 +179,9 @@ public class StructureManager : MonoBehaviour
     public void ResetColorsButton()
     {
         // Sets the default colors.
-        SetDefaultColorsFromSaveData(SaveManager.appSettings);
+        SaveManager.instance.LoadDefaultColorsFromAppSettings();
         // Saves the current set of colors.
         SaveManager.instance.SaveAppColors();
-    }
-
-    public void LoadColorsFromAppSettings(AppSettings appSettings)
-    {
-        homeHeaderBackground.color = new Color(appSettings.homeHeaderBackgroundColor.r,
-                                               appSettings.homeHeaderBackgroundColor.g,
-                                               appSettings.homeHeaderBackgroundColor.b,
-                                               appSettings.homeHeaderBackgroundColor.a);
-
-        homeBackground.color = new Color(appSettings.homeBackgroundColor.r,
-                                         appSettings.homeBackgroundColor.g,
-                                         appSettings.homeBackgroundColor.b,
-                                         appSettings.homeBackgroundColor.a);
-
-        newFolderBackground.color = new Color(appSettings.newDataFolderBackgroundColor.r,
-                                              appSettings.newDataFolderBackgroundColor.g,
-                                              appSettings.newDataFolderBackgroundColor.b,
-                                              appSettings.newDataFolderBackgroundColor.a);
-
-        newInfoBlockBackground.color = new Color(appSettings.newDataBlockBackgroundColor.r,
-                                                 appSettings.newDataBlockBackgroundColor.g,
-                                                 appSettings.newDataBlockBackgroundColor.b,
-                                                 appSettings.newDataBlockBackgroundColor.a);
-        //inside folder
-        optionsBackground.color = new Color(appSettings.homeBackgroundColor.r,
-                                            appSettings.homeBackgroundColor.g,
-                                            appSettings.homeBackgroundColor.b,
-                                            appSettings.homeBackgroundColor.a);
-    }
-
-    public void SetDefaultColorsFromSaveData(AppSettings appSettings)
-    {
-        homeHeaderBackground.color = new Color(appSettings.defaultHomeHeaderBackgroundColor.r,
-                                               appSettings.defaultHomeHeaderBackgroundColor.g,
-                                               appSettings.defaultHomeHeaderBackgroundColor.b,
-                                               appSettings.defaultHomeHeaderBackgroundColor.a);
-
-        homeBackground.color = new Color(appSettings.defaultHomeBackgroundColor.r,
-                                         appSettings.defaultHomeBackgroundColor.g,
-                                         appSettings.defaultHomeBackgroundColor.b,
-                                         appSettings.defaultHomeBackgroundColor.a);
-
-        newFolderBackground.color = new Color(appSettings.defaultNewDataFolderBackgroundColor.r,
-                                              appSettings.defaultNewDataFolderBackgroundColor.g,
-                                              appSettings.defaultNewDataFolderBackgroundColor.b,
-                                              appSettings.defaultNewDataFolderBackgroundColor.a);
-
-        newInfoBlockBackground.color = new Color(appSettings.defaultNewDataBlockBackgroundColor.r,
-                                                 appSettings.defaultNewDataBlockBackgroundColor.g,
-                                                 appSettings.defaultNewDataBlockBackgroundColor.b,
-                                                 appSettings.defaultNewDataBlockBackgroundColor.a);
-        //inside folder
-        optionsBackground.color = new Color(appSettings.defaultHomeBackgroundColor.r,
-                                            appSettings.defaultHomeBackgroundColor.g,
-                                            appSettings.defaultHomeBackgroundColor.b,
-                                            appSettings.defaultHomeBackgroundColor.a);
     }
 
     private void ResetFolderScroll()
@@ -251,25 +195,6 @@ public class StructureManager : MonoBehaviour
         infoBlockHolder.GetComponent<RectTransform>().offsetMin = new Vector2(0, infoBlockHolderDefaultPos.x);
         infoBlockHolder.GetComponent<RectTransform>().offsetMax = new Vector2(0, infoBlockHolderDefaultPos.y);
     }
-
-    //public void CloseClearDataPanelButton(bool b)
-    //{
-    //    if (b)
-    //    {
-    //        SaveManager.saveData.dataFolders = new List<DataFolder>();
-
-    //        for (int i = 0; i < DataCreationManager.instance.folderHolder.childCount; i++)
-    //        {
-    //            Destroy(DataCreationManager.instance.folderHolder.GetChild(i).gameObject);
-    //        }
-
-    //        infoBlockPanel.SetActive(false);
-
-    //        NewNotification("Cleared Local Data");
-    //    }
-
-    //    clearDataPanel.SetActive(false);
-    //}
 
     public void NewNotification(string message)
     {
