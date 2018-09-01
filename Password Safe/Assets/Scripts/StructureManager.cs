@@ -32,21 +32,21 @@ public class StructureManager : MonoBehaviour
     public GameObject colorPickerPanel;
 
     [Header("Customize Picker")]
-    public GameObject customizePanel;
+    [SerializeField] private GameObject customizePanel;
     [Space(10)]
-    public Button customizeHomeHeaderButton;
+    [SerializeField] private Image homeHeaderBackgroundColorPreview;
     public Image homeHeaderBackground;
     [Space(10)]
-    public Button customizeHomeBackgroundButton;
+    [SerializeField] private Image homeBackgroundColorPreview;
     public Image homeBackground;
     [Space(10)]
-    public Button customizeNewFolderHeaderButton;
+    [SerializeField] private Image newFolderBackgroundColorPreview;
     public Image newFolderBackground;
     [Space(10)]
-    public Button customizeNewInfoBlockHeaderButton;
+    [SerializeField] private Image newInfoBlockBackgroundColorPreview;
     public Image newInfoBlockBackground;
     [Space(10)]
-    public Button customizeOptionsBackgroundButton;
+    [SerializeField] private Image optionsBackgroundColorPreview;
     public Image optionsBackground;
 
     [Header("Data Saving Panel")]
@@ -74,11 +74,11 @@ public class StructureManager : MonoBehaviour
     {
         if (customizePanel.activeInHierarchy)
         {
-            ChangeCustomizeButtonColors(customizeHomeHeaderButton, homeHeaderBackground);
-            ChangeCustomizeButtonColors(customizeHomeBackgroundButton, homeBackground);
-            ChangeCustomizeButtonColors(customizeNewFolderHeaderButton, newFolderBackground);
-            ChangeCustomizeButtonColors(customizeNewInfoBlockHeaderButton, newInfoBlockBackground);
-            ChangeCustomizeButtonColors(customizeOptionsBackgroundButton, optionsBackground);
+            homeHeaderBackgroundColorPreview.color = homeHeaderBackground.color;
+            homeBackgroundColorPreview.color = homeBackground.color;
+            newFolderBackgroundColorPreview.color = newFolderBackground.color;
+            newInfoBlockBackgroundColorPreview.color = newInfoBlockBackground.color;
+            optionsBackgroundColorPreview.color = optionsBackground.color;
         }
     }
 
@@ -234,13 +234,6 @@ public class StructureManager : MonoBehaviour
         SaveManager.saveData.homeBackgroundColor = homeBackground.color;
         SaveManager.saveData.newDataFolderBackgroundColor = newFolderBackground.color;
         SaveManager.saveData.newDataBlockBackgroundColor = newInfoBlockBackground.color;
-    }
-
-    private void ChangeCustomizeButtonColors(Button button, Image imageToChange)
-    {
-        ColorBlock colorBlock = button.colors;
-        colorBlock.normalColor = imageToChange.color;
-        button.colors = colorBlock;
     }
 
     private void ResetPanelScroll()
