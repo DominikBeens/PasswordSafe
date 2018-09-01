@@ -2,16 +2,12 @@
 
 A personal project.
 
-This is an app I made that stores data to an xml file on your phone or your Google Drive.
-It's an easy to use offline app where you can store your passwords or other types of data with a nice and simple interface.
-The colors of the user interface are customizable.
+This is version 1.3+ of Password Safe. This app uses Google Firebase authentication and storage to create an e-mail based account which let's the user save and load his data to and from the cloud.   
+It's an easy to use app which let's you store and organize data such as phone numbers, names, notes or passwords. The colors of the user interface and folders are customizable.
 
 ## Features:
 -Organizing data in a clean folder structure with customizable data blocks.   
 -Customizable UI colors.   
--Saving your data locally.   
--Saving your data to Google Drive.   
--Restoring your Google Drive to your phone.   
-
-## Known Issues:   
--Saving to Google Drive for the very first time may sometimes require the user to restart the app.   
+-Saving and loading your data using Google Firebase.   
+(Requires the user to sign up with an e-mail and password)   
+-Restoring your saved data to any phone using your account.   
